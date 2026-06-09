@@ -11,21 +11,21 @@ const starterPacks = {
 
 const recipes = {
   quick: [
-    ["Egg Fried Rice", "15 min", "$1.70", "Beginner", ["Rice", "Eggs", "Soy Sauce", "Spring Onion"]],
-    ["Chicken Wrap", "18 min", "$2.10", "Beginner", ["Chicken", "Flour", "Onions", "Tomatoes"]],
-    ["Garlic Butter Pasta", "17 min", "$1.90", "Beginner", ["Pasta", "Garlic", "Butter", "Parmesan"]],
-    ["High Protein Omelette", "9 min", "$1.30", "Beginner", ["Eggs", "Onions", "Tomatoes"]]
+    ["Egg Fried Rice", "15 min", "Dorm-friendly", "Beginner", ["Rice", "Eggs", "Soy Sauce", "Spring Onion"]],
+    ["Chicken Wrap", "18 min", "Quick lunch", "Beginner", ["Chicken", "Flour", "Onions", "Tomatoes"]],
+    ["Garlic Butter Pasta", "17 min", "Comfort meal", "Beginner", ["Pasta", "Garlic", "Butter", "Parmesan"]],
+    ["High Protein Omelette", "9 min", "Protein boost", "Beginner", ["Eggs", "Onions", "Tomatoes"]]
   ],
   desi: [
-    ["Omelette Paratha Roll", "12 min", "$1.40", "Beginner", ["Eggs", "Flour", "Onions", "Green Chillies"]],
-    ["Chicken Biryani", "40 min", "$2.60", "Intermediate", ["Chicken", "Rice", "Tomatoes", "Garam Masala"]],
-    ["Karahi Chicken", "35 min", "$2.80", "Intermediate", ["Chicken", "Tomatoes", "Ginger", "Garlic"]],
-    ["Masala Fries", "16 min", "$0.90", "Beginner", ["Potatoes", "Red Chilli Powder", "Cumin"]]
+    ["Omelette Paratha Roll", "12 min", "Street-style", "Beginner", ["Eggs", "Flour", "Onions", "Green Chillies"]],
+    ["Chicken Biryani", "40 min", "Weekend favorite", "Intermediate", ["Chicken", "Rice", "Tomatoes", "Garam Masala"]],
+    ["Karahi Chicken", "35 min", "One-pan", "Intermediate", ["Chicken", "Tomatoes", "Ginger", "Garlic"]],
+    ["Masala Fries", "16 min", "Snack attack", "Beginner", ["Potatoes", "Red Chilli Powder", "Cumin"]]
   ],
   creative: [
-    ["Turkish Yogurt Chicken Bake", "38 min", "$2.70", "Intermediate", ["Chicken", "Yogurt", "Potatoes"]],
-    ["Creamy Desi Chicken Casserole", "32 min", "$2.45", "Beginner", ["Chicken", "Yogurt", "Rice"]],
-    ["Spinach Pasta Korma", "24 min", "$1.95", "Beginner", ["Spinach", "Pasta", "Garlic"]]
+    ["Turkish Yogurt Chicken Bake", "38 min", "Creative bake", "Intermediate", ["Chicken", "Yogurt", "Potatoes"]],
+    ["Creamy Desi Chicken Casserole", "32 min", "Comfort tray", "Beginner", ["Chicken", "Yogurt", "Rice"]],
+    ["Spinach Pasta Korma", "24 min", "Use-first meal", "Beginner", ["Spinach", "Pasta", "Garlic"]]
   ]
 };
 
@@ -457,7 +457,7 @@ function openRecipe(recipe) {
     <div class="dialog-food">${recipePhoto(recipe[0], "dialog-photo")}</div>
     <p class="eyebrow">AI recipe idea</p>
     <h2>${recipe[0]}</h2>
-    <p class="dialog-meta">${recipe[1]} · ${recipe[2]} per serving · ${recipe[3]} · Serves ${details.servings}</p>
+    <p class="dialog-meta">${recipe[1]} · ${recipe[2]} · ${recipe[3]} · Serves ${details.servings}</p>
     <div class="recipe-facts">
       <span>${details.equipment}</span>
       <span>${details.nutrition}</span>
@@ -611,7 +611,7 @@ function renderPlan(mode = "Student") {
     mode === "Budget" ? ["Masala Fries", "Egg Fried Rice", "Garlic Butter Pasta"] :
     ["Omelette Paratha Roll", "Chicken Wrap", "Tuna Rice Bowl"];
   $("#weeklyPlan").innerHTML = ["Mon", "Tue", "Wed", "Thu", "Fri"].map((day, index) => `<article class="plan-day"><h4>${day}</h4><p>${meals[index % meals.length]} · ${mode} optimized</p></article>`).join("");
-  $("#shoppingList").innerHTML = [["Cream", "300 ml", "$1.20"], ["Parmesan", "200 g", "$2.40"], ["Yogurt", "500 g", "$1.10"], ["Spinach", "300 g", "$1.30"]]
+  $("#shoppingList").innerHTML = [["Cream", "300 ml", "Dairy"], ["Parmesan", "200 g", "Dairy"], ["Yogurt", "500 g", "Use in creative picks"], ["Spinach", "300 g", "Expires soon"]]
     .map(item => `<article class="shopping-item"><span>${item[0]} · ${item[1]}</span><strong>${item[2]}</strong></article>`).join("");
   $$("[data-plan-mode]").forEach(button => button.addEventListener("click", () => renderPlan(button.dataset.planMode)));
 }
