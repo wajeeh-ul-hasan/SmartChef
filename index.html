@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#1ea672">
+    <meta name="description" content="SmartChef AI helps you decide what to cook from ingredients you already have.">
+    <title>SmartChef AI</title>
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="assets/app-icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="assets/app-icon.svg">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="app-shell customer-app-shell">
+      <main class="phone-frame customer-device" aria-label="SmartChef customer app">
+        <section id="onboarding" class="screen active-screen">
+          <div class="status-bar">
+            <span>9:41</span>
+            <span>SmartChef</span>
+            <button id="themeToggle" class="icon-button" aria-label="Toggle theme">Dark</button>
+          </div>
+          <div class="progress"><span id="progressBar"></span></div>
+          <div id="onboardingContent"></div>
+          <div class="bottom-actions">
+            <button id="backBtn" class="ghost-btn">Back</button>
+            <button id="nextBtn" class="primary-btn">Continue</button>
+          </div>
+        </section>
+
+        <section id="home" class="screen">
+          <div class="top-appbar">
+            <div>
+              <p class="eyebrow">Today</p>
+              <h2 id="greetingTitle">Cook with what you have</h2>
+            </div>
+            <button id="homeThemeToggle" class="icon-button" aria-label="Toggle theme">Dark</button>
+          </div>
+
+          <nav class="tabs" aria-label="Main tabs">
+            <button class="tab active" data-tab="today">Today</button>
+            <button class="tab" data-tab="inventory">Inventory</button>
+            <button class="tab" data-tab="plan">Plan</button>
+            <button class="tab" data-tab="premium">Premium</button>
+            <button class="tab" data-tab="feedback">Feedback</button>
+          </nav>
+
+          <div id="todayTab" class="tab-panel active-panel">
+            <div class="hero-card">
+              <div>
+                <p class="eyebrow">AI pick</p>
+                <h3 id="heroRecipe">Omelette Paratha Roll</h3>
+                <p id="heroMeta">12 min · $1.40 · Beginner</p>
+              </div>
+              <div id="heroFoodVisual" class="hero-food" aria-hidden="true"></div>
+            </div>
+            <div class="quick-stats">
+              <div><strong id="inventoryCount">0</strong><span>Ingredients</span></div>
+              <div><strong id="wasteCount">3</strong><span>Use soon</span></div>
+              <div><strong>7</strong><span>Trial days</span></div>
+            </div>
+            <h3 class="section-title">Cook Right Now</h3>
+            <div id="cookNow" class="recipe-list"></div>
+            <h3 class="section-title">Almost There</h3>
+            <div id="almostThere" class="recipe-list"></div>
+            <h3 class="section-title">Creative AI Suggestions</h3>
+            <div id="creativeIdeas" class="recipe-list"></div>
+          </div>
+
+          <div id="inventoryTab" class="tab-panel">
+            <div class="mode-card">
+              <h3>30-second inventory setup</h3>
+              <p>Choose a cuisine pack, edit quantities, then add everything with one tap.</p>
+            </div>
+            <div class="segmented">
+              <button class="segment active" data-method="packs">Packs</button>
+              <button class="segment" data-method="manual">Search</button>
+              <button class="segment" data-method="voice">Voice</button>
+              <button class="segment" data-method="scan">Scan</button>
+            </div>
+            <div id="inventoryMethod"></div>
+            <h3 class="section-title">Your Inventory</h3>
+            <div id="inventoryList" class="inventory-list"></div>
+          </div>
+
+          <div id="planTab" class="tab-panel">
+            <div class="mode-card">
+              <h3>Weekly Meal Planning</h3>
+              <p>Regenerate a plan based on budget, health, family size, protein goals, or student life.</p>
+            </div>
+            <div id="planModes" class="mode-grid"></div>
+            <div id="weeklyPlan" class="planner"></div>
+            <h3 class="section-title">Smart Shopping List</h3>
+            <div id="shoppingList" class="shopping-list"></div>
+          </div>
+
+          <div id="premiumTab" class="tab-panel">
+            <div class="premium-card">
+              <p class="eyebrow">7-day free trial</p>
+              <h3>Enjoy SmartChef AI Premium FREE for 7 days.</h3>
+              <p>Explore unlimited AI recipes, meal plans, nutrition tracking, shopping optimization, and personalized recommendations before choosing a subscription.</p>
+              <button id="startTrialBtn" class="primary-btn">Start free trial</button>
+            </div>
+            <div class="pricing-grid">
+              <button class="price-card" data-plan="monthly">
+                <span>Monthly</span>
+                <strong>$4.99</strong>
+                <small>per month</small>
+              </button>
+              <button class="price-card best" data-plan="annual">
+                <span>Most Popular - Save 33%</span>
+                <strong>$39.99</strong>
+                <small>per year</small>
+              </button>
+            </div>
+            <div class="admin-snapshot">
+              <h3>Solo-founder build budget</h3>
+              <div class="analytics-grid">
+                <div><strong>$2K-$5K</strong><span>Clickable prototype and testing</span></div>
+                <div><strong>$12K-$25K</strong><span>Lean MVP with real users</span></div>
+                <div><strong>$35K-$70K</strong><span>Full mobile app launch</span></div>
+                <div><strong>$500-$1.5K</strong><span>Monthly AI/cloud tools</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div id="feedbackTab" class="tab-panel">
+            <div class="mode-card">
+              <h3>Customer feedback test</h3>
+              <p>Use this page when sharing SmartChef with early customers. Ask them simple questions and record what they actually want.</p>
+            </div>
+            <div class="feedback-stack">
+              <div class="rating-box">
+                <span>How likely are you to use SmartChef weekly?</span>
+                <div class="rating-row" aria-label="Weekly use rating">
+                  <button class="rating-btn" data-rating="1">1</button>
+                  <button class="rating-btn" data-rating="2">2</button>
+                  <button class="rating-btn" data-rating="3">3</button>
+                  <button class="rating-btn" data-rating="4">4</button>
+                  <button class="rating-btn" data-rating="5">5</button>
+                </div>
+              </div>
+              <label>What problem does this solve for you?
+                <textarea id="feedbackProblem" rows="3" placeholder="Example: I waste too much food because I forget what's in the fridge."></textarea>
+              </label>
+              <label>Which feature feels most useful?
+                <textarea id="feedbackFeature" rows="3" placeholder="Inventory, daily meals, quick meals, shopping list, Premium trial..."></textarea>
+              </label>
+              <label>What would make you pay for this?
+                <textarea id="feedbackPay" rows="3" placeholder="Example: if it saves me 30 minutes every week."></textarea>
+              </label>
+              <button id="saveFeedbackBtn" class="primary-btn">Save customer note</button>
+              <button id="copyFeedbackBtn" class="ghost-btn">Copy feedback summary</button>
+              <button id="restartDemoBtn" class="ghost-btn">Restart app demo</button>
+            </div>
+            <h3 class="section-title">Saved Notes</h3>
+            <div id="feedbackList" class="feedback-list"></div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="recipeDialog" class="recipe-dialog">
+      <div id="recipeDialogContent"></div>
+    </dialog>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "name": "smartchef-prototype",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SmartChef customer-testable clickable prototype and product handoff package.",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "build": "node -e \"console.log('SmartChef is a static web app. Upload this folder to hosting.')\""
+  }
+}

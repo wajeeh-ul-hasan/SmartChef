@@ -1,0 +1,19 @@
+{
+  "name": "SmartChef AI",
+  "short_name": "SmartChef",
+  "description": "Daily AI meal ideas from ingredients you already have.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f7f2",
+  "theme_color": "#1ea672",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "assets/app-icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
