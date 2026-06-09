@@ -9,7 +9,7 @@
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="icon" href="assets/app-icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="assets/app-icon.svg">
-    <link rel="stylesheet" href="styles.css?v=trial1">
+    <link rel="stylesheet" href="styles.css?v=fun1">
   </head>
   <body>
     <div class="app-shell customer-app-shell">
@@ -41,25 +41,39 @@
             <button class="tab active" data-tab="today">Today</button>
             <button class="tab" data-tab="inventory">Inventory</button>
             <button class="tab" data-tab="plan">Plan</button>
-            <button class="tab" data-tab="premium">Trial</button>
             <button class="tab" data-tab="feedback">Feedback</button>
           </nav>
 
           <div id="todayTab" class="tab-panel active-panel">
+            <div class="mood-card">
+              <div>
+                <p class="eyebrow">Pick a vibe</p>
+                <h3>What kind of meal do you want?</h3>
+              </div>
+              <div class="mood-row">
+                <button class="mood-chip active" data-mood="quick">Quick</button>
+                <button class="mood-chip" data-mood="comfort">Comfort</button>
+                <button class="mood-chip" data-mood="creative">Surprise</button>
+              </div>
+            </div>
             <div class="hero-card" data-open-recipe="Omelette Paratha Roll" role="button" tabindex="0" aria-label="Open AI pick recipe">
               <div>
                 <p class="eyebrow">AI pick</p>
                 <h3 id="heroRecipe">Omelette Paratha Roll</h3>
                 <p id="heroMeta">12 min · $1.40 · Beginner</p>
-                <span class="hero-action">View recipe</span>
+                <div class="hero-actions">
+                  <span class="hero-action">View recipe</span>
+                  <button id="surpriseBtn" class="hero-mini-btn">New pick</button>
+                </div>
               </div>
               <div id="heroFoodVisual" class="hero-food" aria-hidden="true"></div>
             </div>
             <div class="quick-stats">
               <div><strong id="inventoryCount">0</strong><span>Ingredients</span></div>
               <div><strong id="wasteCount">3</strong><span>Use soon</span></div>
-              <div><strong>7</strong><span>Trial days</span></div>
+              <div><strong id="ideaCount">8</strong><span>Meal ideas</span></div>
             </div>
+            <div class="hint-card">Tap any dish to see ingredients and cooking instructions.</div>
             <h3 class="section-title">Cook Right Now</h3>
             <div id="cookNow" class="recipe-list"></div>
             <h3 class="section-title">Almost There</h3>
@@ -95,27 +109,6 @@
             <div id="shoppingList" class="shopping-list"></div>
           </div>
 
-          <div id="premiumTab" class="tab-panel">
-            <div class="premium-card">
-              <p class="eyebrow">7-day free trial</p>
-              <h3>Try SmartChef Plus free for 7 days.</h3>
-              <p>Explore unlimited AI recipes, meal plans, nutrition tracking, shopping optimization, and personalized recommendations before choosing a plan.</p>
-              <button id="startTrialBtn" class="primary-btn">Start free trial</button>
-            </div>
-            <div class="pricing-grid">
-              <button class="price-card" data-plan="monthly">
-                <span>Monthly</span>
-                <strong>$4.99</strong>
-                <small>per month</small>
-              </button>
-              <button class="price-card best" data-plan="annual">
-                <span>Most Popular - Save 33%</span>
-                <strong>$39.99</strong>
-                <small>per year</small>
-              </button>
-            </div>
-          </div>
-
           <div id="feedbackTab" class="tab-panel">
             <div class="mode-card">
               <h3>Customer feedback test</h3>
@@ -136,7 +129,7 @@
                 <textarea id="feedbackProblem" rows="3" placeholder="Example: I waste too much food because I forget what's in the fridge."></textarea>
               </label>
               <label>Which feature feels most useful?
-                <textarea id="feedbackFeature" rows="3" placeholder="Inventory, daily meals, quick meals, shopping list, free trial..."></textarea>
+                <textarea id="feedbackFeature" rows="3" placeholder="Inventory, daily meals, quick meals, shopping list, recipe instructions..."></textarea>
               </label>
               <label>What would make you pay for this?
                 <textarea id="feedbackPay" rows="3" placeholder="Example: if it saves me 30 minutes every week."></textarea>
@@ -157,6 +150,6 @@
     </dialog>
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-    <script src="app.js?v=trial1"></script>
+    <script src="app.js?v=fun1"></script>
   </body>
 </html>

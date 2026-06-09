@@ -308,7 +308,7 @@ a {
 }
 
 .tabs {
-  grid-template-columns: repeat(5, minmax(72px, 1fr));
+  grid-template-columns: repeat(4, minmax(76px, 1fr));
   overflow-x: auto;
   scrollbar-width: none;
 }
@@ -351,6 +351,50 @@ a {
   overflow: hidden;
 }
 
+.mood-card {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--surface) 86%, var(--gold)), var(--surface));
+  box-shadow: 0 14px 32px rgba(23, 42, 31, .08);
+}
+
+.mood-card h3 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.mood-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.mood-chip {
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 900;
+  transition: transform 160ms ease, background 160ms ease, color 160ms ease, box-shadow 160ms ease;
+}
+
+.mood-chip.active {
+  border-color: transparent;
+  background: var(--brand);
+  color: #fff;
+  box-shadow: 0 12px 24px color-mix(in srgb, var(--brand) 28%, transparent);
+}
+
+.mood-chip:active {
+  transform: scale(.96);
+}
+
 .hero-card {
   cursor: pointer;
   transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
@@ -389,6 +433,29 @@ a {
   font-weight: 900;
 }
 
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.hero-actions .hero-action {
+  margin-top: 0;
+}
+
+.hero-mini-btn {
+  min-height: 34px;
+  padding: 8px 10px;
+  border: 1px solid rgba(255, 255, 255, .32);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .92);
+  color: #19402f;
+  font-size: 12px;
+  font-weight: 900;
+}
+
 .hero-food {
   align-self: center;
   justify-self: center;
@@ -418,6 +485,16 @@ a {
 .quick-stats span, .analytics-grid span {
   color: var(--muted);
   font-size: 12px;
+}
+
+.hint-card {
+  padding: 13px 14px;
+  border-radius: 14px;
+  border: 1px dashed color-mix(in srgb, var(--brand) 48%, var(--line));
+  background: color-mix(in srgb, var(--brand) 8%, var(--surface));
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
 }
 
 .section-title {

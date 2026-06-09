@@ -251,16 +251,16 @@ const onboardingSteps = [
   { key: "lifestyle", title: "Lifestyle Selection", multi: true, options: ["Student", "International Student", "Bachelor / Living Alone", "Working Professional", "Family Household", "Fitness Enthusiast"] },
   { key: "time", title: "Available Cooking Time", multi: false, options: ["Under 10 Minutes", "10-20 Minutes", "20-40 Minutes", "40+ Minutes"] },
   {
-    key: "trial",
+    key: "ready",
     render: () => `
       <div class="onboarding-hero">
         <div class="premium-card">
-          <p class="eyebrow">Free Trial</p>
-          <h3>Try SmartChef Plus free for 7 days.</h3>
-          <p>Explore unlimited AI recipes, meal plans, nutrition tracking, shopping optimization, and personalized recommendations before choosing a plan.</p>
+          <p class="eyebrow">Ready</p>
+          <h3>Your kitchen assistant is ready.</h3>
+          <p>Start with meal ideas, build your ingredient list, and tap any dish to see ingredients and cooking instructions.</p>
         </div>
         <div class="benefits">
-          ${["No feature restrictions during trial", "Full access to SmartChef Plus", "Cancel anytime before trial ends", "Reminder before billing begins"].map(item => `<div class="benefit">${item}</div>`).join("")}
+          ${["Fast daily suggestions", "Recipes from your ingredients", "Use-soon ingredient reminders", "Quick meals for busy days"].map(item => `<div class="benefit">${item}</div>`).join("")}
         </div>
       </div>`
   }
@@ -276,11 +276,15 @@ const state = JSON.parse(localStorage.getItem("smartchef-state") || "null") || {
   ],
   trialStarted: false,
   selectedPlan: "",
-  selectedRating: 0
+  selectedRating: 0,
+  selectedMood: "quick",
+  heroIndex: 0
 };
 
 if (!state.feedback) state.feedback = defaultFeedback;
 if (!state.selectedRating) state.selectedRating = 0;
+if (!state.selectedMood) state.selectedMood = "quick";
+if (!state.heroIndex) state.heroIndex = 0;
 
 const save = () => localStorage.setItem("smartchef-state", JSON.stringify(state));
 const $ = selector => document.querySelector(selector);
@@ -373,17 +377,23 @@ function card(recipe, action = "Save", note = "") {
   </article>`;
 }
 
+function recipePoolForMood(quickMode) {
+  if (state.selectedMood === "comfort") return [...recipes.desi, ...recipes.quick];
+  if (state.selectedMood === "creative") return [...recipes.creative, ...recipes.quick, ...recipes.desi];
+  return quickMode ? [...recipes.quick, ...recipes.desi] : [...recipes.desi, ...recipes.quick];
+}
+
 function renderHome() {
   const quickMode = ["International Student", "Bachelor / Living Alone", "Working Professional"].some(item => state.profile.lifestyle.includes(item));
-  const all = quickMode ? [...recipes.quick, ...recipes.desi] : [...recipes.desi, ...recipes.quick];
+  const all = recipePoolForMood(quickMode);
   const cookNow = all.filter(recipe => scoreRecipe(recipe).missing.length === 0).slice(0, 3);
   const almost = all.filter(recipe => {
     const missing = scoreRecipe(recipe).missing.length;
     return missing > 0 && missing <= 3;
   }).slice(0, 4);
 
-  const hero = all[0];
-  $("#greetingTitle").textContent = quickMode ? "Quick meals for busy days" : "Cook with what you have";
+  const hero = all[state.heroIndex % all.length];
+  $("#greetingTitle").textContent = state.selectedMood === "creative" ? "Fresh ideas from your kitchen" : quickMode ? "Quick meals for busy days" : "Cook with what you have";
   $("#heroRecipe").textContent = hero[0];
   $("#heroMeta").textContent = `${hero[1]} · ${hero[2]} · ${hero[3]}`;
   $("#heroFoodVisual").innerHTML = recipePhoto(hero[0], "hero-photo");
@@ -391,6 +401,8 @@ function renderHome() {
   $(".hero-card").setAttribute("aria-label", `Open ${hero[0]} recipe`);
   $("#inventoryCount").textContent = state.inventory.length;
   $("#wasteCount").textContent = state.inventory.filter(item => item.expiry <= 3).length;
+  $("#ideaCount").textContent = [...recipes.quick, ...recipes.desi, ...recipes.creative].length;
+  $$(".mood-chip").forEach(button => button.classList.toggle("active", button.dataset.mood === state.selectedMood));
   $("#cookNow").innerHTML = (cookNow.length ? cookNow : all.slice(0, 2)).map(recipe => card(recipe)).join("");
   $("#almostThere").innerHTML = almost.map(recipe => {
     const missing = scoreRecipe(recipe).missing.join(", ");
@@ -401,6 +413,22 @@ function renderHome() {
   renderInventory();
   renderPlan();
   renderFeedback();
+}
+
+function setMood(mood) {
+  state.selectedMood = mood;
+  state.heroIndex = 0;
+  save();
+  renderHome();
+  showToast(`${mood === "quick" ? "Quick meals" : mood === "comfort" ? "Comfort meals" : "Surprise ideas"} loaded.`);
+}
+
+function surpriseHero() {
+  const quickMode = ["International Student", "Bachelor / Living Alone", "Working Professional"].some(item => state.profile.lifestyle.includes(item));
+  const all = recipePoolForMood(quickMode);
+  state.heroIndex = (state.heroIndex + 1) % all.length;
+  save();
+  renderHome();
 }
 
 function bindRecipeCards() {
@@ -673,7 +701,6 @@ function bindEvents() {
       });
     } else {
       state.step = onboardingSteps.length;
-      state.trialStarted = true;
       save();
       completeOnboarding();
     }
@@ -698,17 +725,11 @@ function bindEvents() {
     segment.classList.add("active");
     renderInventoryMethod(segment.dataset.method);
   }));
-  $("#startTrialBtn").addEventListener("click", () => {
-    state.trialStarted = true;
-    save();
-    $("#startTrialBtn").textContent = "Trial active";
+  $$(".mood-chip").forEach(button => button.addEventListener("click", () => setMood(button.dataset.mood)));
+  $("#surpriseBtn").addEventListener("click", event => {
+    event.stopPropagation();
+    surpriseHero();
   });
-  $$(".price-card").forEach(card => card.addEventListener("click", () => {
-    state.selectedPlan = card.dataset.plan;
-    save();
-    $$(".price-card").forEach(item => item.classList.remove("best"));
-    card.classList.add("best");
-  }));
   $$(".rating-btn").forEach(button => button.addEventListener("click", () => {
     state.selectedRating = Number(button.dataset.rating);
     save();

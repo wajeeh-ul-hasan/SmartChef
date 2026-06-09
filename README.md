@@ -20,7 +20,7 @@ npm run dev
 ```
 
 ## Included
-- Clickable onboarding, inventory, recommendations, weekly planning, trial/pricing, and customer feedback capture.
+- Clickable onboarding, inventory, recommendations, weekly planning, mood-based meal discovery, and customer feedback capture.
 - Installable mobile web app settings through `manifest.webmanifest`.
 - Offline-friendly app shell through `service-worker.js`.
 - Light/dark mode.
