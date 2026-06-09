@@ -27,6 +27,7 @@ npm run dev
 - Mobile-first responsive UI.
 - Customer testing and solo-founder budget docs in `docs/`.
 - PostgreSQL schema and API architecture handoff.
+- Starter recipes with real food photos, ingredients, and cooking instructions.
 
 ## Key Files
 - `index.html` - prototype shell.
@@ -35,6 +36,7 @@ npm run dev
 - `manifest.webmanifest` - makes the app installable on supported phones.
 - `service-worker.js` - caches the app shell for repeat testing.
 - `docs/share-with-customers.md` - plain-English sharing instructions.
+- `docs/recipe-photo-guide.md` - how to add or replace recipe photos.
 - `docs/customer-feedback-plan.md` - simple plan for testing with early users.
 - `docs/solo-founder-budget.md` - realistic budget options for a solo founder.
 - `docs/smartchef-product-package.md` - PRD, user flows, wireframes, design system, roadmap, MVP, phases.

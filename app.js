@@ -29,6 +29,188 @@ const recipes = {
   ]
 };
 
+const photoBase = "https://commons.wikimedia.org/wiki/Special:FilePath/";
+const recipeDetails = {
+  "Egg Fried Rice": {
+    servings: 1,
+    photo: `${photoBase}Egg_fried_rice.jpg`,
+    credit: "Photo: ProjectManhattan / Wikimedia Commons / CC BY-SA 3.0",
+    creditUrl: "https://commons.wikimedia.org/wiki/File:Egg_fried_rice.jpg",
+    ingredients: ["1 cup cooked rice", "2 eggs", "1 tbsp oil", "1 tbsp soy sauce", "1 spring onion", "Pinch of black pepper"],
+    instructions: [
+      "Heat oil in a pan on medium-high heat.",
+      "Beat the eggs, pour them into the pan, and scramble until just set.",
+      "Add cooked rice and break up any clumps with a spoon.",
+      "Add soy sauce and pepper, then stir-fry for 2-3 minutes.",
+      "Finish with sliced spring onion and serve hot."
+    ],
+    nutrition: "Approx. 430 calories, 18g protein",
+    equipment: "Pan or wok"
+  },
+  "Chicken Wrap": {
+    servings: 1,
+    photo: `${photoBase}Smoked_chicken_and_avocado_wrap.jpg`,
+    credit: "Photo: Wikimedia Commons contributor / CC licensed",
+    creditUrl: "https://commons.wikimedia.org/wiki/File:Smoked_chicken_and_avocado_wrap.jpg",
+    ingredients: ["1 tortilla or homemade roti", "150g cooked chicken", "2 tbsp yogurt or mayo", "Sliced onion", "Sliced tomato", "Lettuce or coriander", "Pinch of chilli powder"],
+    instructions: [
+      "Warm the tortilla or roti for 20-30 seconds.",
+      "Mix chicken with yogurt or mayo, chilli powder, and a pinch of salt.",
+      "Place chicken, onion, tomato, and greens in the middle.",
+      "Fold the sides inward and roll tightly.",
+      "Toast seam-side down for 1-2 minutes if you want it crisp."
+    ],
+    nutrition: "Approx. 520 calories, 35g protein",
+    equipment: "Pan or sandwich press"
+  },
+  "Garlic Butter Pasta": {
+    servings: 1,
+    photo: `${photoBase}Aglio_e_olio.jpg`,
+    credit: "Photo: Jbarta / Wikimedia Commons / CC BY-SA 2.0",
+    creditUrl: "https://commons.wikimedia.org/wiki/File:Aglio_e_olio.jpg",
+    ingredients: ["100g pasta", "2 cloves garlic", "1 tbsp butter", "1 tbsp olive oil", "2 tbsp parmesan", "Chilli flakes", "Salt"],
+    instructions: [
+      "Boil pasta in salted water until just tender.",
+      "Save half a cup of pasta water before draining.",
+      "Melt butter with olive oil and gently cook sliced garlic for 1 minute.",
+      "Add pasta, parmesan, chilli flakes, and a splash of pasta water.",
+      "Toss until glossy, then serve immediately."
+    ],
+    nutrition: "Approx. 560 calories, 18g protein",
+    equipment: "Pot and pan"
+  },
+  "High Protein Omelette": {
+    servings: 1,
+    photo: `${photoBase}Denver_omelette.jpg`,
+    credit: "Photo: Ruth Hartnup / Wikimedia Commons / CC BY 2.0",
+    creditUrl: "https://commons.wikimedia.org/wiki/File:Denver_omelette.jpg",
+    ingredients: ["3 eggs", "1/2 onion", "1/2 tomato", "Green chilli", "Salt", "Black pepper", "1 tsp oil"],
+    instructions: [
+      "Beat eggs with salt and pepper.",
+      "Cook onion, tomato, and green chilli in oil for 2 minutes.",
+      "Pour in the eggs and reduce the heat.",
+      "Cook until the bottom sets, then fold the omelette.",
+      "Serve with toast, roti, or rice."
+    ],
+    nutrition: "Approx. 330 calories, 24g protein",
+    equipment: "Non-stick pan"
+  },
+  "Omelette Paratha Roll": {
+    servings: 1,
+    photo: `${photoBase}Denver_omelette.jpg`,
+    credit: "Photo: Ruth Hartnup / Wikimedia Commons / CC BY 2.0",
+    creditUrl: "https://commons.wikimedia.org/wiki/File:Denver_omelette.jpg",
+    ingredients: ["1 paratha or roti", "2 eggs", "1/4 onion", "Green chilli", "Coriander", "Salt", "1 tsp oil"],
+    instructions: [
+      "Beat eggs with onion, green chilli, coriander, and salt.",
+      "Cook the omelette in a lightly oiled pan.",
+      "Warm the paratha or roti.",
+      "Place the omelette on the paratha and roll tightly.",
+      "Toast for 1 minute on each side for a crisp finish."
+    ],
+    nutrition: "Approx. 480 calories, 22g protein",
+    equipment: "Pan"
+  },
+  "Chicken Biryani": {
+    servings: 2,
+    photo: `${photoBase}Hyderabadi_Chicken_Biryani.jpg`,
+    credit: "Photo: Garrett Ziegler / Wikimedia Commons / CC BY 2.0",
+    creditUrl: "https://commons.wikimedia.org/wiki/File:Hyderabadi_Chicken_Biryani.jpg",
+    ingredients: ["300g chicken", "1 cup basmati rice", "1 onion", "1 tomato", "1 tbsp yogurt", "1 tsp garam masala", "1/2 tsp turmeric", "1 tsp chilli powder", "Oil", "Salt"],
+    instructions: [
+      "Wash rice and soak it while you prepare the chicken.",
+      "Fry sliced onion in oil until golden, then remove half for topping.",
+      "Cook chicken with tomato, yogurt, turmeric, chilli powder, garam masala, and salt.",
+      "Boil rice until about 80% cooked, then drain.",
+      "Layer chicken and rice, cover tightly, and cook on low heat for 12-15 minutes.",
+      "Top with fried onions and rest for 5 minutes before serving."
+    ],
+    nutrition: "Approx. 620 calories per serving, 38g protein",
+    equipment: "Pot with lid"
+  },
+  "Karahi Chicken": {
+    servings: 2,
+    photo: `${photoBase}Chicken_Karahi.JPG`,
+    credit: "Photo: Miansari66 / Wikimedia Commons / Public Domain",
+    creditUrl: "https://commons.wikimedia.org/wiki/File:Chicken_Karahi.JPG",
+    ingredients: ["400g chicken", "2 tomatoes", "1 tbsp ginger garlic paste", "2 green chillies", "1 tsp cumin", "1 tsp coriander powder", "1/2 tsp chilli powder", "2 tbsp oil", "Salt", "Fresh coriander"],
+    instructions: [
+      "Heat oil and sear chicken until lightly browned.",
+      "Add ginger garlic paste and cook for 1 minute.",
+      "Add chopped tomatoes, spices, and salt.",
+      "Cook uncovered until the tomatoes break down and oil starts separating.",
+      "Add green chillies and simmer until chicken is fully cooked.",
+      "Finish with fresh coriander and serve with roti or rice."
+    ],
+    nutrition: "Approx. 430 calories per serving, 42g protein",
+    equipment: "Karahi, wok, or deep pan"
+  },
+  "Masala Fries": {
+    servings: 1,
+    photo: `${photoBase}Curly_Fries.jpg`,
+    credit: "Photo: Genvessel / Wikimedia Commons / CC BY 2.0",
+    creditUrl: "https://commons.wikimedia.org/wiki/File:Curly_Fries.jpg",
+    ingredients: ["2 potatoes or frozen fries", "1 tbsp oil", "1/2 tsp chilli powder", "1/2 tsp cumin", "1/2 tsp chaat masala", "Salt", "Coriander"],
+    instructions: [
+      "Cut potatoes into fries or use frozen fries.",
+      "Air fry, bake, or pan fry until golden.",
+      "Mix chilli powder, cumin, chaat masala, and salt.",
+      "Toss hot fries with the spice mix.",
+      "Finish with coriander and serve with yogurt sauce or ketchup."
+    ],
+    nutrition: "Approx. 360 calories, 6g protein",
+    equipment: "Air fryer, oven, or pan"
+  },
+  "Turkish Yogurt Chicken Bake": {
+    servings: 2,
+    photo: `${photoBase}Boneless_chicken_karahi_with_naan.jpg`,
+    credit: "Photo: Ser Amantio di Nicolao / Wikimedia Commons",
+    creditUrl: "https://commons.wikimedia.org/wiki/File:Boneless_chicken_karahi_with_naan.jpg",
+    ingredients: ["350g chicken", "1/2 cup yogurt", "1 potato", "1 tsp paprika", "1 tsp cumin", "1 clove garlic", "Salt", "1 tbsp oil"],
+    instructions: [
+      "Mix yogurt, garlic, spices, salt, and oil.",
+      "Coat chicken and sliced potato in the mixture.",
+      "Place everything in a baking dish.",
+      "Bake at 200C for 25-30 minutes until chicken is cooked.",
+      "Rest for 5 minutes and serve with rice or bread."
+    ],
+    nutrition: "Approx. 480 calories per serving, 39g protein",
+    equipment: "Oven or air fryer"
+  },
+  "Creamy Desi Chicken Casserole": {
+    servings: 2,
+    photo: `${photoBase}Chicken_Karahi.JPG`,
+    credit: "Photo: Miansari66 / Wikimedia Commons / Public Domain",
+    creditUrl: "https://commons.wikimedia.org/wiki/File:Chicken_Karahi.JPG",
+    ingredients: ["300g chicken", "1 cup cooked rice", "1/2 cup yogurt", "1 tomato", "1 tsp garam masala", "1/2 tsp chilli powder", "Salt", "Coriander"],
+    instructions: [
+      "Cook chicken with tomato, spices, and salt until tender.",
+      "Stir in yogurt on low heat so it stays creamy.",
+      "Fold in cooked rice.",
+      "Cover and steam for 5 minutes.",
+      "Top with coriander and serve warm."
+    ],
+    nutrition: "Approx. 520 calories per serving, 36g protein",
+    equipment: "Deep pan"
+  },
+  "Spinach Pasta Korma": {
+    servings: 1,
+    photo: `${photoBase}Aglio_e_olio.jpg`,
+    credit: "Photo: Jbarta / Wikimedia Commons / CC BY-SA 2.0",
+    creditUrl: "https://commons.wikimedia.org/wiki/File:Aglio_e_olio.jpg",
+    ingredients: ["100g pasta", "1 cup spinach", "1 clove garlic", "2 tbsp yogurt or cream", "1/2 tsp cumin", "Salt", "Black pepper"],
+    instructions: [
+      "Boil pasta until just tender.",
+      "Cook garlic and spinach in a pan until wilted.",
+      "Add cumin, salt, pepper, and yogurt or cream on low heat.",
+      "Add pasta and a splash of pasta water.",
+      "Toss until creamy and serve."
+    ],
+    nutrition: "Approx. 470 calories, 17g protein",
+    equipment: "Pot and pan"
+  }
+};
+
 const planModes = ["Budget", "Healthy", "Family", "High Protein", "Weight Loss", "Student", "Bachelor"];
 const defaultFeedback = [
   {
@@ -160,12 +342,32 @@ function scoreRecipe(recipe) {
   return { available, missing: recipe[4].filter(ingredient => !names.includes(ingredient.toLowerCase())) };
 }
 
-function card(recipe, action = "Save") {
+function getRecipeDetails(title) {
+  return recipeDetails[title] || {
+    servings: 1,
+    photo: "",
+    credit: "Photo coming soon",
+    creditUrl: "#",
+    ingredients: recipeDetails["Egg Fried Rice"].ingredients,
+    instructions: recipeDetails["Egg Fried Rice"].instructions,
+    nutrition: "Nutrition estimate coming soon",
+    equipment: "Basic kitchen tools"
+  };
+}
+
+function recipePhoto(title, className) {
+  const details = getRecipeDetails(title);
+  if (!details.photo) return foodVisual(title, className.includes("hero") ? "hero" : "thumb");
+  return `<img class="${className}" src="${details.photo}" alt="${title}" loading="lazy">`;
+}
+
+function card(recipe, action = "Save", note = "") {
+  const details = getRecipeDetails(recipe[0]);
   return `<article class="recipe-card" data-open-recipe="${recipe[0]}">
-    ${foodVisual(recipe[0], "thumb")}
+    ${recipePhoto(recipe[0], "recipe-photo")}
     <div>
       <h4>${recipe[0]}</h4>
-      <p>${recipe[1]} · ${recipe[2]} · ${recipe[3]} · ${recipe[4].length} ingredients</p>
+      <p>${note || `${recipe[1]} · ${recipe[2]} · ${recipe[3]} · ${details.ingredients.length} ingredients`}</p>
     </div>
     <button class="tiny-btn" data-recipe="${recipe[0]}">${action}</button>
   </article>`;
@@ -184,13 +386,13 @@ function renderHome() {
   $("#greetingTitle").textContent = quickMode ? "Quick meals for busy days" : "Cook with what you have";
   $("#heroRecipe").textContent = hero[0];
   $("#heroMeta").textContent = `${hero[1]} · ${hero[2]} · ${hero[3]}`;
-  $("#heroFoodVisual").innerHTML = foodVisual(hero[0], "hero");
+  $("#heroFoodVisual").innerHTML = recipePhoto(hero[0], "hero-photo");
   $("#inventoryCount").textContent = state.inventory.length;
   $("#wasteCount").textContent = state.inventory.filter(item => item.expiry <= 3).length;
   $("#cookNow").innerHTML = (cookNow.length ? cookNow : all.slice(0, 2)).map(recipe => card(recipe)).join("");
   $("#almostThere").innerHTML = almost.map(recipe => {
     const missing = scoreRecipe(recipe).missing.join(", ");
-    return card([recipe[0], recipe[1], recipe[2], recipe[3], [`Missing: ${missing}`]], "Shop");
+    return card(recipe, "Shop", `Missing: ${missing}`);
   }).join("");
   $("#creativeIdeas").innerHTML = recipes.creative.map(recipe => card(recipe, "Try")).join("");
   bindRecipeCards();
@@ -211,19 +413,23 @@ function bindRecipeCards() {
 }
 
 function openRecipe(recipe) {
+  const details = getRecipeDetails(recipe[0]);
   const dialog = $("#recipeDialog");
   $("#recipeDialogContent").innerHTML = `
     <button class="dialog-close" aria-label="Close recipe">Close</button>
-    <div class="dialog-food">${foodVisual(recipe[0], "large")}</div>
+    <div class="dialog-food">${recipePhoto(recipe[0], "dialog-photo")}</div>
     <p class="eyebrow">AI recipe idea</p>
     <h2>${recipe[0]}</h2>
-    <p class="dialog-meta">${recipe[1]} · ${recipe[2]} per serving · ${recipe[3]}</p>
-    <div class="ingredient-pills">${recipe[4].map(item => `<span>${item}</span>`).join("")}</div>
-    <ol class="recipe-steps">
-      <li>Prep ingredients and keep everything within reach.</li>
-      <li>Cook the base flavors first, then add the main ingredient.</li>
-      <li>Finish, taste, and save this recipe if it worked for your routine.</li>
-    </ol>
+    <p class="dialog-meta">${recipe[1]} · ${recipe[2]} per serving · ${recipe[3]} · Serves ${details.servings}</p>
+    <div class="recipe-facts">
+      <span>${details.equipment}</span>
+      <span>${details.nutrition}</span>
+    </div>
+    <h3 class="recipe-subtitle">Ingredients</h3>
+    <div class="ingredient-pills">${details.ingredients.map(item => `<span>${item}</span>`).join("")}</div>
+    <h3 class="recipe-subtitle">Cooking Instructions</h3>
+    <ol class="recipe-steps">${details.instructions.map(step => `<li>${step}</li>`).join("")}</ol>
+    <a class="photo-credit" href="${details.creditUrl}" target="_blank" rel="noreferrer">${details.credit}</a>
     <div class="dialog-actions">
       <button class="ghost-btn">Not for me</button>
       <button class="primary-btn">I would cook this</button>

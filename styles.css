@@ -404,7 +404,7 @@ a {
 
 .recipe-card {
   display: grid;
-  grid-template-columns: 68px 1fr auto;
+  grid-template-columns: 78px 1fr auto;
   gap: 12px;
   align-items: center;
   padding: 12px;
@@ -422,6 +422,24 @@ a {
 
 .recipe-card:active {
   transform: scale(0.98);
+}
+
+.recipe-photo {
+  width: 76px;
+  height: 76px;
+  border-radius: 14px;
+  object-fit: cover;
+  background: var(--surface-2);
+  box-shadow: 0 10px 22px rgba(23, 42, 31, 0.14);
+}
+
+.hero-photo {
+  width: 138px;
+  height: 138px;
+  border-radius: 28px;
+  object-fit: cover;
+  border: 4px solid rgba(255, 255, 255, .75);
+  box-shadow: 0 22px 34px rgba(45, 30, 18, .26);
 }
 
 .food-icon {
@@ -691,6 +709,15 @@ a {
   padding: 20px 0 8px;
 }
 
+.dialog-photo {
+  width: 100%;
+  max-height: 265px;
+  border-radius: 22px;
+  object-fit: cover;
+  background: var(--surface-2);
+  box-shadow: 0 18px 36px rgba(23, 42, 31, 0.18);
+}
+
 .recipe-dialog h2 {
   margin: 4px 0 6px;
   font-size: 28px;
@@ -700,6 +727,26 @@ a {
 .dialog-meta {
   margin: 0 0 12px;
   color: var(--muted);
+}
+
+.recipe-facts {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0 14px;
+}
+
+.recipe-facts span {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--surface-2);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.recipe-subtitle {
+  margin: 18px 0 10px;
+  font-size: 16px;
 }
 
 .ingredient-pills {
@@ -721,6 +768,18 @@ a {
   padding-left: 22px;
   color: var(--muted);
   line-height: 1.5;
+}
+
+.recipe-steps li {
+  margin-bottom: 8px;
+}
+
+.photo-credit {
+  display: block;
+  margin: 8px 0 16px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
 }
 
 .dialog-actions {
