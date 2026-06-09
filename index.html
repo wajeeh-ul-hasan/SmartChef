@@ -9,7 +9,7 @@
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="icon" href="assets/app-icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="assets/app-icon.svg">
-    <link rel="stylesheet" href="styles.css?v=recipes1">
+    <link rel="stylesheet" href="styles.css?v=trial1">
   </head>
   <body>
     <div class="app-shell customer-app-shell">
@@ -41,16 +41,17 @@
             <button class="tab active" data-tab="today">Today</button>
             <button class="tab" data-tab="inventory">Inventory</button>
             <button class="tab" data-tab="plan">Plan</button>
-            <button class="tab" data-tab="premium">Premium</button>
+            <button class="tab" data-tab="premium">Trial</button>
             <button class="tab" data-tab="feedback">Feedback</button>
           </nav>
 
           <div id="todayTab" class="tab-panel active-panel">
-            <div class="hero-card">
+            <div class="hero-card" data-open-recipe="Omelette Paratha Roll" role="button" tabindex="0" aria-label="Open AI pick recipe">
               <div>
                 <p class="eyebrow">AI pick</p>
                 <h3 id="heroRecipe">Omelette Paratha Roll</h3>
                 <p id="heroMeta">12 min · $1.40 · Beginner</p>
+                <span class="hero-action">View recipe</span>
               </div>
               <div id="heroFoodVisual" class="hero-food" aria-hidden="true"></div>
             </div>
@@ -97,8 +98,8 @@
           <div id="premiumTab" class="tab-panel">
             <div class="premium-card">
               <p class="eyebrow">7-day free trial</p>
-              <h3>Enjoy SmartChef AI Premium FREE for 7 days.</h3>
-              <p>Explore unlimited AI recipes, meal plans, nutrition tracking, shopping optimization, and personalized recommendations before choosing a subscription.</p>
+              <h3>Try SmartChef Plus free for 7 days.</h3>
+              <p>Explore unlimited AI recipes, meal plans, nutrition tracking, shopping optimization, and personalized recommendations before choosing a plan.</p>
               <button id="startTrialBtn" class="primary-btn">Start free trial</button>
             </div>
             <div class="pricing-grid">
@@ -112,15 +113,6 @@
                 <strong>$39.99</strong>
                 <small>per year</small>
               </button>
-            </div>
-            <div class="admin-snapshot">
-              <h3>Solo-founder build budget</h3>
-              <div class="analytics-grid">
-                <div><strong>$2K-$5K</strong><span>Clickable prototype and testing</span></div>
-                <div><strong>$12K-$25K</strong><span>Lean MVP with real users</span></div>
-                <div><strong>$35K-$70K</strong><span>Full mobile app launch</span></div>
-                <div><strong>$500-$1.5K</strong><span>Monthly AI/cloud tools</span></div>
-              </div>
             </div>
           </div>
 
@@ -144,7 +136,7 @@
                 <textarea id="feedbackProblem" rows="3" placeholder="Example: I waste too much food because I forget what's in the fridge."></textarea>
               </label>
               <label>Which feature feels most useful?
-                <textarea id="feedbackFeature" rows="3" placeholder="Inventory, daily meals, quick meals, shopping list, Premium trial..."></textarea>
+                <textarea id="feedbackFeature" rows="3" placeholder="Inventory, daily meals, quick meals, shopping list, free trial..."></textarea>
               </label>
               <label>What would make you pay for this?
                 <textarea id="feedbackPay" rows="3" placeholder="Example: if it saves me 30 minutes every week."></textarea>
@@ -165,6 +157,6 @@
     </dialog>
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-    <script src="app.js?v=recipes1"></script>
+    <script src="app.js?v=trial1"></script>
   </body>
 </html>

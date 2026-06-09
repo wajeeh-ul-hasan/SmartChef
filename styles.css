@@ -351,6 +351,21 @@ a {
   overflow: hidden;
 }
 
+.hero-card {
+  cursor: pointer;
+  transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+}
+
+.hero-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 42px rgba(23, 42, 31, 0.2);
+  filter: saturate(1.05);
+}
+
+.hero-card:active {
+  transform: scale(.985);
+}
+
 .hero-card .eyebrow, .premium-card .eyebrow {
   color: rgba(255,255,255,0.84);
 }
@@ -359,6 +374,19 @@ a {
   margin: 8px 0 10px;
   font-size: 28px;
   line-height: 1.02;
+}
+
+.hero-action {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  margin-top: 8px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .22);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 900;
 }
 
 .hero-food {

@@ -255,12 +255,12 @@ const onboardingSteps = [
     render: () => `
       <div class="onboarding-hero">
         <div class="premium-card">
-          <p class="eyebrow">Free Premium Trial</p>
-          <h3>Enjoy SmartChef AI Premium FREE for 7 days.</h3>
-          <p>Explore unlimited AI recipes, meal plans, nutrition tracking, shopping optimization, and personalized recommendations before choosing a subscription.</p>
+          <p class="eyebrow">Free Trial</p>
+          <h3>Try SmartChef Plus free for 7 days.</h3>
+          <p>Explore unlimited AI recipes, meal plans, nutrition tracking, shopping optimization, and personalized recommendations before choosing a plan.</p>
         </div>
         <div class="benefits">
-          ${["No feature restrictions during trial", "Full access to Premium AI capabilities", "Cancel anytime before trial ends", "Reminder before billing begins"].map(item => `<div class="benefit">${item}</div>`).join("")}
+          ${["No feature restrictions during trial", "Full access to SmartChef Plus", "Cancel anytime before trial ends", "Reminder before billing begins"].map(item => `<div class="benefit">${item}</div>`).join("")}
         </div>
       </div>`
   }
@@ -387,6 +387,8 @@ function renderHome() {
   $("#heroRecipe").textContent = hero[0];
   $("#heroMeta").textContent = `${hero[1]} · ${hero[2]} · ${hero[3]}`;
   $("#heroFoodVisual").innerHTML = recipePhoto(hero[0], "hero-photo");
+  $(".hero-card").dataset.openRecipe = hero[0];
+  $(".hero-card").setAttribute("aria-label", `Open ${hero[0]} recipe`);
   $("#inventoryCount").textContent = state.inventory.length;
   $("#wasteCount").textContent = state.inventory.filter(item => item.expiry <= 3).length;
   $("#cookNow").innerHTML = (cookNow.length ? cookNow : all.slice(0, 2)).map(recipe => card(recipe)).join("");
@@ -403,12 +405,19 @@ function renderHome() {
 
 function bindRecipeCards() {
   $$("[data-open-recipe]").forEach(cardEl => {
-    cardEl.addEventListener("click", event => {
+    cardEl.onclick = event => {
       if (event.target.closest("button")) return;
       const title = cardEl.dataset.openRecipe;
       const recipe = [...recipes.quick, ...recipes.desi, ...recipes.creative].find(item => item[0] === title);
       if (recipe) openRecipe(recipe);
-    });
+    };
+    cardEl.onkeydown = event => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      const title = cardEl.dataset.openRecipe;
+      const recipe = [...recipes.quick, ...recipes.desi, ...recipes.creative].find(item => item[0] === title);
+      if (recipe) openRecipe(recipe);
+    };
   });
 }
 
