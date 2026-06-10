@@ -255,12 +255,44 @@ const onboardingSteps = [
     render: () => `
       <div class="onboarding-hero">
         <div class="premium-card">
-          <p class="eyebrow">Ready</p>
+          <p class="eyebrow">Choose your plan</p>
           <h3>Your kitchen assistant is ready.</h3>
-          <p>Start with meal ideas, build your ingredient list, and tap any dish to see ingredients and cooking instructions.</p>
+          <p>Pick the plan you would test with customers. This prototype records the choice on this device.</p>
         </div>
-        <div class="benefits">
-          ${["Fast daily suggestions", "Recipes from your ingredients", "Use-soon ingredient reminders", "Quick meals for busy days"].map(item => `<div class="benefit">${item}</div>`).join("")}
+        <div class="pricing-grid">
+          ${[
+            {
+              name: "Basic",
+              price: "$0.99",
+              cycle: "/month",
+              note: "Recommendations and recipes only",
+              features: ["Daily meal recommendations", "Recipe ingredients and instructions", "Cuisine and diet preferences", "No ingredient inventory included"]
+            },
+            {
+              name: "Pro Monthly",
+              price: "$4.99",
+              cycle: "/month",
+              note: "Full smart cooking assistant",
+              features: ["Everything in Basic", "Ingredient inventory", "Suggestions from available ingredients", "Photo and voice inventory setup"]
+            },
+            {
+              name: "Pro Yearly",
+              price: "$39.99",
+              cycle: "/year",
+              note: "Same Pro features, best value",
+              best: true,
+              features: ["Everything in Pro Monthly", "Ingredient-based recommendations", "Photo and voice inventory setup", "Save compared with monthly billing"]
+            }
+          ].map(plan => `
+            <article class="price-card ${plan.best ? "best" : ""} ${state.selectedPlan === plan.name ? "selected" : ""}">
+              ${plan.best ? `<span class="plan-badge">Best value</span>` : ""}
+              <h4>${plan.name}</h4>
+              <div><strong>${plan.price}</strong><span>${plan.cycle}</span></div>
+              <p>${plan.note}</p>
+              <ul>${plan.features.map(feature => `<li>${feature}</li>`).join("")}</ul>
+              <button class="primary-btn" data-plan-choice="${plan.name}">${state.selectedPlan === plan.name ? "Selected" : "Choose plan"}</button>
+            </article>
+          `).join("")}
         </div>
       </div>`
   }
@@ -289,6 +321,7 @@ if (!state.heroIndex) state.heroIndex = 0;
 const save = () => localStorage.setItem("smartchef-state", JSON.stringify(state));
 const $ = selector => document.querySelector(selector);
 const $$ = selector => Array.from(document.querySelectorAll(selector));
+const hasInventoryAccess = () => state.selectedPlan !== "Basic";
 
 function renderOnboarding() {
   const step = onboardingSteps[state.step];
@@ -298,6 +331,7 @@ function renderOnboarding() {
 
   if (step.render) {
     $("#onboardingContent").innerHTML = step.render();
+    bindPlanChoices();
     return;
   }
 
@@ -328,6 +362,17 @@ function renderOnboarding() {
       }
       save();
       renderOnboarding();
+    });
+  });
+}
+
+function bindPlanChoices() {
+  $$("[data-plan-choice]").forEach(button => {
+    button.addEventListener("click", () => {
+      state.selectedPlan = button.dataset.planChoice;
+      save();
+      renderOnboarding();
+      showToast(`${state.selectedPlan} selected.`);
     });
   });
 }
@@ -598,6 +643,29 @@ function addIngredient(name, quantity) {
 }
 
 function renderInventory() {
+  if (!hasInventoryAccess()) {
+    $("#inventoryMethod").innerHTML = `<div class="mode-card locked-card">
+      <p class="eyebrow">Pro feature</p>
+      <h3>Inventory is not included in Basic.</h3>
+      <p>Upgrade to Pro Monthly or Pro Yearly to store ingredients, get suggestions from food you already have, and add items with photo or voice.</p>
+      <button class="primary-btn" data-open-plans>View Pro plans</button>
+    </div>`;
+    $("#inventoryList").innerHTML = `<article class="inventory-item">
+      <div><h4>Basic plan active</h4><p>Recommendations and recipes are available. Inventory setup is reserved for Pro.</p></div>
+      <span class="expiry">Locked</span>
+    </article>`;
+    const plansButton = $("[data-open-plans]");
+    if (plansButton) plansButton.addEventListener("click", () => {
+      state.step = onboardingSteps.length - 1;
+      save();
+      runTransition(() => {
+        $("#home").classList.remove("active-screen");
+        $("#onboarding").classList.add("active-screen");
+        renderOnboarding();
+      });
+    });
+    return;
+  }
   renderInventoryMethod();
   $("#inventoryList").innerHTML = state.inventory.map(item => `<article class="inventory-item">
     <div><h4>${item.name}</h4><p>${item.quantity}</p></div>

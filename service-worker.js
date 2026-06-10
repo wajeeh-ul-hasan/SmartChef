@@ -1,9 +1,9 @@
-const CACHE_NAME = "smartchef-customer-app-v8";
+const CACHE_NAME = "smartchef-customer-app-v10";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css?v=noprice1",
-  "./app.js?v=noprice1",
+  "./styles.css?v=plans2",
+  "./app.js?v=plans2",
   "./manifest.webmanifest",
   "./assets/app-icon.svg"
 ];
