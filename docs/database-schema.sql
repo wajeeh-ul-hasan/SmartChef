@@ -31,7 +31,8 @@ CREATE TABLE subscriptions (
   billing_started_at TIMESTAMPTZ,
   store TEXT CHECK (store IN ('apple', 'google', 'revenuecat_test')),
   store_customer_id TEXT,
-  store_subscription_id TEXT
+  store_subscription_id TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 CREATE TABLE ingredients (
@@ -52,8 +53,10 @@ CREATE TABLE user_inventory_items (
   display_name TEXT NOT NULL,
   quantity NUMERIC,
   unit TEXT,
-  source TEXT NOT NULL CHECK (source IN ('starter_pack', 'manual', 'voice', 'photo', 'receipt')),
+  category TEXT DEFAULT 'Other',
+  source TEXT NOT NULL CHECK (source IN ('starter_pack', 'manual', 'voice', 'photo', 'receipt', 'assistant')),
   confidence NUMERIC(4,3) NOT NULL DEFAULT 1.000,
+  confirmed BOOLEAN NOT NULL DEFAULT true,
   added_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   expires_at TIMESTAMPTZ,
   consumed_at TIMESTAMPTZ

@@ -69,7 +69,7 @@ export async function detectPhotoInventory(imageUrlOrBase64: string): Promise<In
             type: "input_text",
             text: "Identify grocery ingredients in this image. Return JSON array only with displayName, quantity estimate, category, confidence from 0 to 1."
           },
-          { type: "input_image", image_url: imageUrlOrBase64 }
+          { type: "input_image", image_url: imageUrlOrBase64, detail: "auto" }
         ]
       }
     ]

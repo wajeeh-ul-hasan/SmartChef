@@ -50,7 +50,7 @@ export const starterPacks = {
 
 export const seedInventory: InventoryItem[] = [
   {
-    id: "inv_spinach",
+    id: "00000000-0000-0000-0000-000000000101",
     displayName: "Spinach",
     quantity: "300 g",
     category: "Vegetables",
@@ -60,7 +60,7 @@ export const seedInventory: InventoryItem[] = [
     confirmed: true
   },
   {
-    id: "inv_eggs",
+    id: "00000000-0000-0000-0000-000000000102",
     displayName: "Eggs",
     quantity: "6",
     category: "Protein",
@@ -70,7 +70,7 @@ export const seedInventory: InventoryItem[] = [
     confirmed: true
   },
   {
-    id: "inv_potatoes",
+    id: "00000000-0000-0000-0000-000000000103",
     displayName: "Potatoes",
     quantity: "1 kg",
     category: "Vegetables",
