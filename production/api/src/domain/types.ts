@@ -35,6 +35,8 @@ export interface InventoryItem {
 export interface Recipe {
   id: string;
   title: string;
+  photoUrl?: string;
+  photoCredit?: string;
   cuisine: string;
   dietaryTags: string[];
   skillLevel: "beginner" | "intermediate" | "advanced";

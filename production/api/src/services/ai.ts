@@ -87,6 +87,8 @@ export async function generateRecipe(prompt: string, profile: UserProfile, inven
     return {
       id: `ai-${Date.now()}`,
       title: "SmartChef Pantry Skillet",
+      photoUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Boneless_chicken_karahi_with_naan.jpg",
+      photoCredit: "Photo: Wikimedia Commons",
       cuisine: profile.cuisines[0] ?? "Fusion",
       dietaryTags: profile.dietaryPreferences.map(item => item.toLowerCase()),
       skillLevel: profile.cookingSkill,

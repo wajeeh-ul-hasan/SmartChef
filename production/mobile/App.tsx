@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Image, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { api } from "./src/api/client";
 import { colors, shadow } from "./src/theme/theme";
@@ -8,6 +8,7 @@ import type { IngredientCandidate, InventoryItem, Plan, RecommendationSections, 
 type Tab = "today" | "inventory" | "assistant" | "plans" | "settings";
 
 const emptySections: RecommendationSections = { cookRightNow: [], almostThere: [], creative: [] };
+const heroPhoto = "https://commons.wikimedia.org/wiki/Special:FilePath/Hyderabadi_Chicken_Biryani.jpg";
 
 export default function App() {
   const [onboarded, setOnboarded] = useState(false);
@@ -86,6 +87,7 @@ export default function App() {
       <SafeAreaView style={styles.safe}>
         <StatusBar style="dark" />
         <ScrollView contentContainerStyle={styles.screen}>
+          <Image source={{ uri: heroPhoto }} style={styles.onboardingImage} />
           <Text style={styles.eyebrow}>SmartChef AI</Text>
           <Text style={styles.heroTitle}>Never wonder what to cook again.</Text>
           <Text style={styles.body}>Get a 7-day Pro trial with recipes, inventory, photo recognition, voice inventory, AI meal ideas, and shopping lists unlocked.</Text>
@@ -211,7 +213,8 @@ function RecipeSection({ title, recipes, onOpen }: { title: string; recipes: Rec
       <Text style={styles.sectionTitle}>{title}</Text>
       {recipes.map(recipe => (
         <TouchableOpacity key={`${title}-${recipe.id}`} style={styles.recipeCard} onPress={() => onOpen(recipe)}>
-          <View>
+          {recipe.photoUrl ? <Image source={{ uri: recipe.photoUrl }} style={styles.recipeImage} /> : <View style={styles.recipeImageFallback} />}
+          <View style={styles.recipeCopy}>
             <Text style={styles.cardTitle}>{recipe.title}</Text>
             <Text style={styles.muted}>{recipe.cookingTimeMinutes} min · {recipe.skillLevel} · {recipe.ingredients.length} ingredients</Text>
             {recipe.missingIngredients?.length ? <Text style={styles.warning}>Missing: {recipe.missingIngredients.join(", ")}</Text> : null}
@@ -226,9 +229,11 @@ function RecipeModal({ recipe, onClose }: { recipe: Recipe; onClose: () => void 
   return (
     <View style={styles.modalOverlay}>
       <ScrollView style={styles.modal}>
+        {recipe.photoUrl ? <Image source={{ uri: recipe.photoUrl }} style={styles.modalImage} /> : null}
         <Text style={styles.eyebrow}>Recipe</Text>
         <Text style={styles.heroTitle}>{recipe.title}</Text>
         <Text style={styles.body}>{recipe.cookingTimeMinutes} min · {recipe.equipment}</Text>
+        {recipe.photoCredit ? <Text style={styles.photoCredit}>{recipe.photoCredit}</Text> : null}
         <Text style={styles.sectionTitle}>Ingredients</Text>
         {recipe.ingredients.map(item => <Text key={item} style={styles.body}>- {item}</Text>)}
         <Text style={styles.sectionTitle}>Instructions</Text>
@@ -259,7 +264,11 @@ const styles = StyleSheet.create({
   muted: { color: colors.muted, fontSize: 13, lineHeight: 19 },
   warning: { color: colors.accent, fontSize: 13, fontWeight: "800", marginTop: 4 },
   card: { backgroundColor: colors.surface, borderRadius: 14, padding: 16, gap: 12, ...shadow },
-  recipeCard: { backgroundColor: colors.surface, borderRadius: 14, padding: 16, marginBottom: 10, ...shadow },
+  onboardingImage: { width: "100%", height: 210, borderRadius: 18, backgroundColor: colors.line },
+  recipeCard: { backgroundColor: colors.surface, borderRadius: 14, padding: 10, marginBottom: 10, flexDirection: "row", gap: 12, alignItems: "center", ...shadow },
+  recipeImage: { width: 92, height: 92, borderRadius: 10, backgroundColor: colors.line },
+  recipeImageFallback: { width: 92, height: 92, borderRadius: 10, backgroundColor: "#eaf6ef" },
+  recipeCopy: { flex: 1 },
   rowCard: { backgroundColor: colors.surface, borderRadius: 14, padding: 14, marginBottom: 10, flexDirection: "row", justifyContent: "space-between", alignItems: "center", ...shadow },
   planCard: { backgroundColor: colors.surface, borderRadius: 14, padding: 16, gap: 8, borderWidth: 1, borderColor: colors.line, marginBottom: 10 },
   selected: { borderColor: colors.brand, backgroundColor: "#ecfff6" },
@@ -273,5 +282,7 @@ const styles = StyleSheet.create({
   input: { backgroundColor: "#f6f1e8", minHeight: 48, borderRadius: 12, padding: 12, color: colors.ink },
   badge: { backgroundColor: "#eaf6ef", color: colors.brandDark, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 999, overflow: "hidden", fontSize: 12, fontWeight: "900" },
   modalOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(20,28,22,0.45)", padding: 16, justifyContent: "center" },
-  modal: { backgroundColor: colors.surface, borderRadius: 20, padding: 18, maxHeight: "88%" }
+  modal: { backgroundColor: colors.surface, borderRadius: 20, padding: 18, maxHeight: "88%" },
+  modalImage: { width: "100%", height: 220, borderRadius: 16, marginBottom: 14, backgroundColor: colors.line },
+  photoCredit: { color: colors.muted, fontSize: 11, marginBottom: 8 }
 });

@@ -1,5 +1,7 @@
 import type { InventoryItem, Recipe, UserProfile } from "../domain/types.js";
 
+const photoBase = "https://commons.wikimedia.org/wiki/Special:FilePath/";
+
 export const defaultProfile: UserProfile = {
   cuisines: ["Desi / Pakistani", "Indian", "Italian", "Chinese"],
   dietaryPreferences: ["Halal"],
@@ -83,6 +85,8 @@ export const recipes: Recipe[] = [
   {
     id: "egg-fried-rice",
     title: "Egg Fried Rice",
+    photoUrl: `${photoBase}Egg_fried_rice.jpg`,
+    photoCredit: "Photo: ProjectManhattan / Wikimedia Commons",
     cuisine: "Chinese",
     dietaryTags: ["halal", "quick"],
     skillLevel: "beginner",
@@ -101,6 +105,8 @@ export const recipes: Recipe[] = [
   {
     id: "omelette-paratha-roll",
     title: "Omelette Paratha Roll",
+    photoUrl: `${photoBase}Denver_omelette.jpg`,
+    photoCredit: "Photo: Ruth Hartnup / Wikimedia Commons",
     cuisine: "Desi / Pakistani",
     dietaryTags: ["halal", "quick"],
     skillLevel: "beginner",
@@ -119,6 +125,8 @@ export const recipes: Recipe[] = [
   {
     id: "karahi-chicken",
     title: "Karahi Chicken",
+    photoUrl: `${photoBase}Chicken_Karahi.JPG`,
+    photoCredit: "Photo: Miansari66 / Wikimedia Commons",
     cuisine: "Desi / Pakistani",
     dietaryTags: ["halal", "high protein"],
     skillLevel: "intermediate",
@@ -137,6 +145,8 @@ export const recipes: Recipe[] = [
   {
     id: "spinach-pasta-korma",
     title: "Spinach Pasta Korma",
+    photoUrl: `${photoBase}Aglio_e_olio.jpg`,
+    photoCredit: "Photo: Jbarta / Wikimedia Commons",
     cuisine: "Fusion",
     dietaryTags: ["halal", "use soon"],
     skillLevel: "beginner",

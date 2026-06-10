@@ -31,6 +31,8 @@ export interface IngredientCandidate {
 export interface Recipe {
   id: string;
   title: string;
+  photoUrl?: string;
+  photoCredit?: string;
   cuisine: string;
   dietaryTags: string[];
   skillLevel: string;
