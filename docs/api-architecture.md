@@ -7,7 +7,7 @@
 - Database: PostgreSQL.
 - Storage: AWS S3 for user photos, receipt images, generated recipe photos, and creator content in future phases.
 - AI: OpenAI text models for generation and ranking, vision model for ingredient detection, speech-to-text for voice inventory.
-- Payments: Stripe or RevenueCat for app subscriptions.
+- Payments: RevenueCat for iOS/Android app subscriptions. Stripe is reserved for future web or B2B billing.
 
 ## Service Modules
 - Auth Service: email, Google, Apple, session issuance.
@@ -55,13 +55,24 @@ GET  /v1/meal-plans/current
 POST /v1/meal-plans/generate
 
 GET  /v1/subscriptions/plans
-POST /v1/subscriptions/checkout
-POST /v1/webhooks/billing
+POST /v1/me/trial
+POST /v1/webhooks/revenuecat
 
 GET  /v1/admin/analytics
 GET  /v1/admin/recipes
 PATCH /v1/admin/recipes/:id
 GET  /v1/admin/recommendation-monitoring
+```
+
+## Subscription Plans
+```json
+{
+  "plans": [
+    { "id": "basic_monthly", "name": "Basic", "price": "$0.99/month", "entitlement": "basic" },
+    { "id": "pro_monthly", "name": "Pro Monthly", "price": "$4.99/month", "entitlement": "pro" },
+    { "id": "pro_yearly", "name": "Pro Yearly", "price": "$39.99/year", "entitlement": "pro" }
+  ]
+}
 ```
 
 ## Recommendation Response Shape

@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "SmartChef AI",
+    "slug": "smartchef-ai",
+    "scheme": "smartchef",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "backgroundColor": "#0f2a1d",
+      "resizeMode": "contain"
+    },
+    "ios": {
+      "bundleIdentifier": "app.smartchef.mobile",
+      "supportsTablet": false,
+      "infoPlist": {
+        "NSCameraUsageDescription": "SmartChef uses your camera to detect grocery ingredients for your inventory.",
+        "NSMicrophoneUsageDescription": "SmartChef uses your microphone to turn spoken ingredients into inventory items.",
+        "NSPhotoLibraryUsageDescription": "SmartChef lets you select grocery photos for ingredient detection."
+      }
+    },
+    "android": {
+      "package": "app.smartchef.mobile",
+      "permissions": ["CAMERA", "RECORD_AUDIO", "READ_MEDIA_IMAGES"]
+    },
+    "extra": {
+      "apiBaseUrl": "http://localhost:8080"
+    }
+  }
+}

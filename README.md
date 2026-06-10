@@ -28,6 +28,9 @@ npm run dev
 - Customer testing and solo-founder budget docs in `docs/`.
 - PostgreSQL schema and API architecture handoff.
 - Starter recipes with real food photos, ingredients, and cooking instructions.
+- Production mobile app foundation in `production/mobile`.
+- Production API foundation in `production/api`.
+- App Store / Play Store launch checklist in `docs/app-store-launch-checklist.md`.
 
 ## Key Files
 - `index.html` - prototype shell.
@@ -43,3 +46,13 @@ npm run dev
 - `docs/database-schema.sql` - PostgreSQL schema.
 - `docs/api-architecture.md` - backend service and endpoint architecture.
 - `docs/ai-recommendation-engine.md` - recommendation pipeline and ranking logic.
+- `production/README.md` - how to run and continue the production app build.
+
+## Production App Direction
+The production app should be built from `production/`, not by wrapping this static web prototype in a WebView. The current production foundation uses:
+
+- React Native / Expo for iOS and Android.
+- Node.js + Express + TypeScript for the API.
+- PostgreSQL schema in `docs/database-schema.sql`.
+- OpenAI server-side AI assistant, vision inventory detection, and voice parsing hooks.
+- RevenueCat-compatible plans and entitlements for App Store and Google Play subscriptions.

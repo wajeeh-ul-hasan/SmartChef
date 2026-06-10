@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "node server.js",
     "start": "node server.js",
-    "build": "node -e \"console.log('SmartChef is a static web app. Upload this folder to hosting.')\""
+    "build": "node -e \"console.log('SmartChef prototype is a static web app. Production code lives in production/.')\"",
+    "production:api": "cd production/api && npm run dev",
+    "production:mobile": "cd production/mobile && npm run start"
   }
 }

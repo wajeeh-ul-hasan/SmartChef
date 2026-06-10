@@ -28,7 +28,7 @@ The product is designed for international students, bachelors, busy professional
 - Quick Meals Mode for students, bachelors, professionals, and low-time users.
 - Shopping list generation from missing ingredients.
 - Weekly meal plan modes: Budget, Healthy, Family, High Protein, Weight Loss, Student, Bachelor.
-- Premium trial and subscription plan selection.
+- 7-day Pro trial and Basic / Pro subscription plan selection.
 - Solo-founder budget preview and customer feedback capture.
 
 ## Out of MVP
@@ -132,10 +132,11 @@ INVENTORY               PLAN                   PREMIUM
 - Motion: quick step transitions, button press scaling, looping product demo animation.
 
 ## Monetization
-- New users receive full Premium access for 7 days.
+- New users receive full Pro access for 7 days.
 - Trial messaging must clearly state no feature restrictions, cancel-anytime policy, full AI access, and reminder before billing.
-- Monthly plan: $4.99/month.
-- Annual plan: $39.99/year, displayed as "Most Popular - Save 33%".
+- Basic plan: $0.99/month for recommendations and recipes only.
+- Pro Monthly plan: $4.99/month for inventory, ingredient-based suggestions, photo inventory, and voice inventory.
+- Pro Yearly plan: $39.99/year for the same Pro features, displayed as best value.
 
 ## Operator Dashboard Requirements
 - User analytics: activation, retention, daily active users, cooking streaks.

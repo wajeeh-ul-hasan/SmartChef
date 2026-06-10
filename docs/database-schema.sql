@@ -24,13 +24,14 @@ CREATE TABLE user_profiles (
 CREATE TABLE subscriptions (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  status TEXT NOT NULL CHECK (status IN ('trialing', 'active', 'past_due', 'cancelled', 'expired')),
-  plan TEXT CHECK (plan IN ('monthly', 'annual')),
+  status TEXT NOT NULL CHECK (status IN ('trialing', 'basic_active', 'pro_active', 'expired', 'cancelled')),
+  plan TEXT CHECK (plan IN ('basic_monthly', 'pro_monthly', 'pro_yearly')),
   trial_started_at TIMESTAMPTZ,
   trial_ends_at TIMESTAMPTZ,
   billing_started_at TIMESTAMPTZ,
-  external_customer_id TEXT,
-  external_subscription_id TEXT
+  store TEXT CHECK (store IN ('apple', 'google', 'revenuecat_test')),
+  store_customer_id TEXT,
+  store_subscription_id TEXT
 );
 
 CREATE TABLE ingredients (
@@ -139,6 +140,47 @@ CREATE TABLE weekly_meal_plans (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+CREATE TABLE inventory_detection_batches (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  source TEXT NOT NULL CHECK (source IN ('voice', 'photo', 'receipt', 'assistant')),
+  raw_input_url TEXT,
+  transcript TEXT,
+  model TEXT,
+  status TEXT NOT NULL DEFAULT 'needs_confirmation' CHECK (status IN ('needs_confirmation', 'confirmed', 'dismissed')),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE inventory_detection_candidates (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  batch_id UUID NOT NULL REFERENCES inventory_detection_batches(id) ON DELETE CASCADE,
+  display_name TEXT NOT NULL,
+  quantity_text TEXT,
+  category TEXT,
+  confidence NUMERIC(4,3) NOT NULL DEFAULT 0.000,
+  confirmed BOOLEAN NOT NULL DEFAULT false,
+  created_inventory_item_id UUID REFERENCES user_inventory_items(id)
+);
+
+CREATE TABLE assistant_threads (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  title TEXT NOT NULL DEFAULT 'Ask SmartChef',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE assistant_messages (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  thread_id UUID NOT NULL REFERENCES assistant_threads(id) ON DELETE CASCADE,
+  role TEXT NOT NULL CHECK (role IN ('user', 'assistant', 'tool')),
+  content TEXT NOT NULL,
+  tool_actions JSONB NOT NULL DEFAULT '[]',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
 CREATE INDEX idx_inventory_user_expiry ON user_inventory_items(user_id, expires_at);
 CREATE INDEX idx_recipe_cuisine_time ON recipes(cuisine, cooking_time_minutes);
 CREATE INDEX idx_events_user_type ON user_recipe_events(user_id, event_type, created_at);
+CREATE INDEX idx_detection_batches_user_status ON inventory_detection_batches(user_id, status);
+CREATE INDEX idx_assistant_threads_user ON assistant_threads(user_id, updated_at);
