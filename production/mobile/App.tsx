@@ -7,15 +7,92 @@ import type { IngredientCandidate, InventoryItem, Plan, RecommendationSections, 
 
 type Tab = "today" | "inventory" | "assistant" | "plans" | "settings";
 
-const emptySections: RecommendationSections = { cookRightNow: [], almostThere: [], creative: [] };
 const heroPhoto = "https://commons.wikimedia.org/wiki/Special:FilePath/Hyderabadi_Chicken_Biryani.jpg";
+
+const fallbackPlans: Plan[] = [
+  {
+    id: "basic_monthly",
+    name: "Basic",
+    price: "$0.99/month",
+    entitlement: "basic",
+    features: ["Daily recommendations", "Recipe instructions"]
+  },
+  {
+    id: "pro_monthly",
+    name: "Pro Monthly",
+    price: "$4.99/month",
+    entitlement: "pro",
+    features: ["Inventory", "Ingredient-based ideas", "Photo scan", "Voice inventory"]
+  },
+  {
+    id: "pro_yearly",
+    name: "Pro Yearly",
+    price: "$39.99/year",
+    entitlement: "pro",
+    badge: "Best value",
+    features: ["Everything in Pro Monthly", "Save with yearly billing"]
+  }
+];
+
+const fallbackSections: RecommendationSections = {
+  cookRightNow: [
+    {
+      id: "egg-fried-rice-demo",
+      title: "Egg Fried Rice",
+      photoUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Egg_fried_rice.jpg",
+      photoCredit: "Photo: Wikimedia Commons",
+      cuisine: "Chinese",
+      dietaryTags: ["halal", "quick"],
+      skillLevel: "beginner",
+      cookingTimeMinutes: 15,
+      ingredients: ["Cooked rice", "Eggs", "Soy sauce", "Spring onion"],
+      instructions: ["Heat oil in a pan.", "Scramble the eggs until soft.", "Add rice and soy sauce.", "Toss for 3 minutes.", "Finish with spring onion."],
+      nutrition: "Approx. 430 calories, 18g protein",
+      equipment: "Pan or wok"
+    }
+  ],
+  almostThere: [
+    {
+      id: "omelette-paratha-demo",
+      title: "Omelette Paratha Roll",
+      photoUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Denver_omelette.jpg",
+      photoCredit: "Photo: Wikimedia Commons",
+      cuisine: "Desi / Pakistani",
+      dietaryTags: ["halal", "quick"],
+      skillLevel: "beginner",
+      cookingTimeMinutes: 12,
+      ingredients: ["Eggs", "Paratha", "Onion", "Green chilli"],
+      instructions: ["Beat eggs with onion and chilli.", "Cook the omelette.", "Warm the paratha.", "Roll the omelette inside.", "Toast both sides for 1 minute."],
+      nutrition: "Approx. 480 calories, 22g protein",
+      equipment: "Pan",
+      missingIngredients: ["Paratha", "Green chilli"]
+    }
+  ],
+  creative: [
+    {
+      id: "spinach-pasta-korma-demo",
+      title: "Spinach Pasta Korma",
+      photoUrl: "https://commons.wikimedia.org/wiki/Special:FilePath/Aglio_e_olio.jpg",
+      photoCredit: "Photo: Wikimedia Commons",
+      cuisine: "Fusion",
+      dietaryTags: ["halal", "use soon"],
+      skillLevel: "beginner",
+      cookingTimeMinutes: 24,
+      ingredients: ["Spinach", "Pasta", "Garlic", "Yogurt"],
+      instructions: ["Boil pasta until tender.", "Cook garlic and spinach.", "Lower heat and stir in yogurt.", "Add pasta with a splash of pasta water.", "Toss until creamy."],
+      nutrition: "Approx. 470 calories, 17g protein",
+      equipment: "Pot and pan",
+      aiGenerated: true
+    }
+  ]
+};
 
 export default function App() {
   const [onboarded, setOnboarded] = useState(false);
   const [tab, setTab] = useState<Tab>("today");
-  const [plans, setPlans] = useState<Plan[]>([]);
+  const [plans, setPlans] = useState<Plan[]>(fallbackPlans);
   const [selectedPlan, setSelectedPlan] = useState("pro_monthly");
-  const [sections, setSections] = useState<RecommendationSections>(emptySections);
+  const [sections, setSections] = useState<RecommendationSections>(fallbackSections);
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [assistantInput, setAssistantInput] = useState("");
@@ -23,21 +100,26 @@ export default function App() {
   const [voiceText, setVoiceText] = useState("I have 2 onions, half kilo chicken and 1 kg rice.");
   const [candidates, setCandidates] = useState<IngredientCandidate[]>([]);
   const [loading, setLoading] = useState(false);
+  const [connectionMessage, setConnectionMessage] = useState("");
 
   async function refresh() {
-    const [planResult, recommendationResult] = await Promise.all([api.plans(), api.recommendations()]);
-    setPlans(planResult.plans);
-    setSections(recommendationResult.sections);
     try {
+      const [planResult, recommendationResult] = await Promise.all([api.plans(), api.recommendations()]);
+      setPlans(planResult.plans);
+      setSections(recommendationResult.sections);
       const inventoryResult = await api.inventory();
       setInventory(inventoryResult.items);
-    } catch {
+      setConnectionMessage("");
+    } catch (error) {
       setInventory([]);
+      setPlans(fallbackPlans);
+      setSections(fallbackSections);
+      setConnectionMessage("Showing demo recipes. Start the API and set EXPO_PUBLIC_API_BASE_URL to your Mac IP to use live recommendations.");
     }
   }
 
   useEffect(() => {
-    refresh().catch(() => {});
+    refresh();
   }, []);
 
   const activeRecipes = useMemo(() => {
@@ -130,6 +212,15 @@ export default function App() {
       <ScrollView contentContainerStyle={styles.content}>
         {tab === "today" && (
           <>
+            {connectionMessage ? (
+              <View style={styles.noticeCard}>
+                <Text style={styles.cardTitle}>Demo mode</Text>
+                <Text style={styles.muted}>{connectionMessage}</Text>
+                <TouchableOpacity style={styles.secondaryButton} onPress={refresh}>
+                  <Text style={styles.secondaryText}>Retry connection</Text>
+                </TouchableOpacity>
+              </View>
+            ) : null}
             <RecipeSection title="Cook Right Now" recipes={sections.cookRightNow} onOpen={setRecipe} />
             <RecipeSection title="Almost There" recipes={sections.almostThere} onOpen={setRecipe} />
             <RecipeSection title="Creative AI Suggestions" recipes={sections.creative} onOpen={setRecipe} />
@@ -264,6 +355,7 @@ const styles = StyleSheet.create({
   muted: { color: colors.muted, fontSize: 13, lineHeight: 19 },
   warning: { color: colors.accent, fontSize: 13, fontWeight: "800", marginTop: 4 },
   card: { backgroundColor: colors.surface, borderRadius: 14, padding: 16, gap: 12, ...shadow },
+  noticeCard: { backgroundColor: "#fff7df", borderRadius: 14, padding: 14, gap: 8, borderWidth: 1, borderColor: "#f0cf76" },
   onboardingImage: { width: "100%", height: 210, borderRadius: 18, backgroundColor: colors.line },
   recipeCard: { backgroundColor: colors.surface, borderRadius: 14, padding: 10, marginBottom: 10, flexDirection: "row", gap: 12, alignItems: "center", ...shadow },
   recipeImage: { width: 92, height: 92, borderRadius: 10, backgroundColor: colors.line },
