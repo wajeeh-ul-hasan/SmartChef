@@ -255,10 +255,14 @@ const onboardingSteps = [
     render: () => `
       <div class="onboarding-hero">
         <div class="premium-card">
-          <p class="eyebrow">Choose your plan</p>
-          <h3>Your kitchen assistant is ready.</h3>
-          <p>Pick the plan you would test with customers. This prototype records the choice on this device.</p>
+          <p class="eyebrow">7-day Pro trial included</p>
+          <h3>Explore every SmartChef feature free.</h3>
+          <p>New users get 7 days of Pro access before deciding what to keep. During the trial, inventory, ingredient-based suggestions, photo setup, voice setup, meal planning, and recipes are all unlocked.</p>
+          <div class="trial-perks">
+            ${["No feature restrictions during trial", "Full inventory and AI recommendations", "Photo and voice inventory setup", "Choose a plan after testing"].map(item => `<span>${item}</span>`).join("")}
+          </div>
         </div>
+        <p class="plan-helper">Choose what you would keep after the free trial ends.</p>
         <div class="pricing-grid">
           ${[
             {
@@ -290,7 +294,7 @@ const onboardingSteps = [
               <div><strong>${plan.price}</strong><span>${plan.cycle}</span></div>
               <p>${plan.note}</p>
               <ul>${plan.features.map(feature => `<li>${feature}</li>`).join("")}</ul>
-              <button class="primary-btn" data-plan-choice="${plan.name}">${state.selectedPlan === plan.name ? "Selected" : "Choose plan"}</button>
+              <button class="primary-btn" data-plan-choice="${plan.name}">${state.selectedPlan === plan.name ? "Keep after trial" : "Choose after trial"}</button>
             </article>
           `).join("")}
         </div>
@@ -307,6 +311,7 @@ const state = JSON.parse(localStorage.getItem("smartchef-state") || "null") || {
     { name: "Potatoes", quantity: "1 kg", expiry: 6 }
   ],
   trialStarted: false,
+  trialEndsAt: "",
   selectedPlan: "",
   selectedRating: 0,
   selectedMood: "quick",
@@ -317,11 +322,30 @@ if (!state.feedback) state.feedback = defaultFeedback;
 if (!state.selectedRating) state.selectedRating = 0;
 if (!state.selectedMood) state.selectedMood = "quick";
 if (!state.heroIndex) state.heroIndex = 0;
+if (!("trialEndsAt" in state)) state.trialEndsAt = "";
 
 const save = () => localStorage.setItem("smartchef-state", JSON.stringify(state));
 const $ = selector => document.querySelector(selector);
 const $$ = selector => Array.from(document.querySelectorAll(selector));
-const hasInventoryAccess = () => state.selectedPlan !== "Basic";
+const hasInventoryAccess = () => isTrialActive() || state.selectedPlan !== "Basic";
+
+function isTrialActive() {
+  if (!state.trialStarted) return false;
+  if (!state.trialEndsAt) return true;
+  return Date.now() < Date.parse(state.trialEndsAt);
+}
+
+function trialDaysRemaining() {
+  if (!isTrialActive() || !state.trialEndsAt) return 0;
+  return Math.max(1, Math.ceil((Date.parse(state.trialEndsAt) - Date.now()) / (24 * 60 * 60 * 1000)));
+}
+
+function startTrialIfNeeded() {
+  if (state.trialStarted) return;
+  state.trialStarted = true;
+  state.trialEndsAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+  if (!state.selectedPlan) state.selectedPlan = "Pro Monthly";
+}
 
 function renderOnboarding() {
   const step = onboardingSteps[state.step];
@@ -378,6 +402,8 @@ function bindPlanChoices() {
 }
 
 function completeOnboarding() {
+  startTrialIfNeeded();
+  save();
   runTransition(() => {
     $("#onboarding").classList.remove("active-screen");
     $("#home").classList.add("active-screen");
@@ -447,6 +473,9 @@ function renderHome() {
   $("#inventoryCount").textContent = state.inventory.length;
   $("#wasteCount").textContent = state.inventory.filter(item => item.expiry <= 3).length;
   $("#ideaCount").textContent = [...recipes.quick, ...recipes.desi, ...recipes.creative].length;
+  $("#todayTab .hint-card").textContent = isTrialActive()
+    ? `7-day Pro trial active: ${trialDaysRemaining()} days left to test inventory, photo, voice, and ingredient-based recipes.`
+    : "Tap any dish to see ingredients and cooking instructions.";
   $$(".mood-chip").forEach(button => button.classList.toggle("active", button.dataset.mood === state.selectedMood));
   $("#cookNow").innerHTML = (cookNow.length ? cookNow : all.slice(0, 2)).map(recipe => card(recipe)).join("");
   $("#almostThere").innerHTML = almost.map(recipe => {

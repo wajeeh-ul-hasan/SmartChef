@@ -692,6 +692,29 @@ a {
   margin-bottom: 14px;
 }
 
+.trial-perks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.trial-perks span {
+  border-radius: 999px;
+  padding: 7px 10px;
+  background: rgba(255, 255, 255, .18);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.plan-helper {
+  margin: 0 0 10px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 750;
+}
+
 .pricing-grid {
   display: grid;
   gap: 10px;
