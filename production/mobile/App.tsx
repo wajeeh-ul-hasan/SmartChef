@@ -87,6 +87,47 @@ const fallbackSections: RecommendationSections = {
   ]
 };
 
+function localInventoryParse(text: string): IngredientCandidate[] {
+  const known: Array<[string, string, string]> = [
+    ["chicken", "Chicken", "Protein"],
+    ["rice", "Rice", "Grains"],
+    ["onion", "Onions", "Vegetables"],
+    ["egg", "Eggs", "Protein"],
+    ["tomato", "Tomatoes", "Vegetables"],
+    ["potato", "Potatoes", "Vegetables"],
+    ["spinach", "Spinach", "Vegetables"],
+    ["yogurt", "Yogurt", "Dairy"]
+  ];
+
+  return known
+    .filter(([needle]) => text.toLowerCase().includes(needle))
+    .map(([needle, displayName, category]) => ({
+      displayName,
+      quantity: quantityFromText(text, needle),
+      category,
+      confidence: 0.72,
+      source: "voice" as const
+    }));
+}
+
+function quantityFromText(text: string, ingredient: string) {
+  const match = text.match(new RegExp(`(\\d+(?:\\.\\d+)?)\\s*(kg|kilo|kilos|g|gram|grams|bottle|bottles|bag|bags)?\\s+${ingredient}s?`, "i"));
+  if (!match) return "1 unit";
+  const unit = (match[2] ?? "unit").replace(/^kilos?$/i, "kg").replace(/^grams?$/i, "g");
+  return `${match[1]} ${unit}`;
+}
+
+function offlineAssistantReply(question: string, recipes: Recipe[]) {
+  const best = recipes[0];
+  if (question.toLowerCase().includes("rice")) {
+    return "For simple rice: rinse 1 cup rice until the water is mostly clear, add 2 cups water and a pinch of salt, simmer covered for 12-15 minutes, then rest for 5 minutes before fluffing.";
+  }
+
+  return best
+    ? `I would try ${best.title}. It takes about ${best.cookingTimeMinutes} minutes and uses ${best.ingredients.slice(0, 4).join(", ")}. Tap the recipe card on Today to see the full steps.`
+    : "Tell me 2-3 ingredients you have, and I will suggest a quick meal.";
+}
+
 export default function App() {
   const [onboarded, setOnboarded] = useState(false);
   const [tab, setTab] = useState<Tab>("today");
@@ -99,7 +140,9 @@ export default function App() {
   const [assistantReply, setAssistantReply] = useState("Ask me what to cook, what to buy, or how to use ingredients before they expire.");
   const [voiceText, setVoiceText] = useState("I have 2 onions, half kilo chicken and 1 kg rice.");
   const [candidates, setCandidates] = useState<IngredientCandidate[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [inventoryLoading, setInventoryLoading] = useState(false);
+  const [assistantLoading, setAssistantLoading] = useState(false);
+  const [inventoryMessage, setInventoryMessage] = useState("");
   const [connectionMessage, setConnectionMessage] = useState("");
 
   async function refresh() {
@@ -127,40 +170,69 @@ export default function App() {
   }, [sections]);
 
   async function parseVoice() {
-    setLoading(true);
+    setInventoryLoading(true);
+    setInventoryMessage("");
     try {
       const result = await api.parseVoice(voiceText);
       setCandidates(result.candidates);
+      setInventoryMessage(result.candidates.length ? "Review the detected ingredients below, then add them to inventory." : "I could not detect ingredients. Try writing: 2 kg chicken, 5 kg rice.");
+    } catch {
+      const localCandidates = localInventoryParse(voiceText);
+      setCandidates(localCandidates);
+      setInventoryMessage(localCandidates.length ? "Using quick local detection. Review and add these ingredients." : "I could not reach the assistant or detect ingredients from that text.");
     } finally {
-      setLoading(false);
+      setInventoryLoading(false);
     }
   }
 
   async function simulatePhoto() {
-    setLoading(true);
+    setInventoryLoading(true);
+    setInventoryMessage("");
     try {
       const result = await api.detectPhoto("https://commons.wikimedia.org/wiki/Special:FilePath/Tomatoes_plain_and_sliced.jpg");
       setCandidates(result.candidates);
+      setInventoryMessage(result.candidates.length ? "Photo scan found these ingredients. Confirm before saving." : "Photo scan did not detect ingredients. Try voice inventory for now.");
+    } catch {
+      setCandidates([
+        { displayName: "Tomatoes", quantity: "1 kg", category: "Vegetables", confidence: 0.82, source: "photo" },
+        { displayName: "Garlic", quantity: "250 g", category: "Vegetables", confidence: 0.76, source: "photo" },
+        { displayName: "Rice", quantity: "1 bag", category: "Grains", confidence: 0.7, source: "photo" }
+      ]);
+      setInventoryMessage("Using demo photo detection. Confirm these ingredients to test the flow.");
     } finally {
-      setLoading(false);
+      setInventoryLoading(false);
     }
   }
 
   async function confirmCandidates() {
-    await api.addInventoryItems(candidates.map(candidate => ({ ...candidate, confirmed: true })));
-    setCandidates([]);
-    await refresh();
+    if (!candidates.length) return;
+    setInventoryLoading(true);
+    setInventoryMessage("");
+    try {
+      const result = await api.addInventoryItems(candidates.map(candidate => ({ ...candidate, confirmed: true })));
+      setInventory(result.items);
+      setCandidates([]);
+      setInventoryMessage("Added to inventory. Recommendations will now use these ingredients.");
+      await refresh();
+    } catch {
+      setInventoryMessage("I could not save those ingredients. Make sure the API is running, then try again.");
+    } finally {
+      setInventoryLoading(false);
+    }
   }
 
   async function askAssistant() {
     if (!assistantInput.trim()) return;
-    setLoading(true);
+    const question = assistantInput;
+    setAssistantLoading(true);
     try {
-      const result = await api.assistant([{ role: "user", content: assistantInput }]);
+      const result = await api.assistant([{ role: "user", content: question }]);
       setAssistantReply(result.message);
       setAssistantInput("");
+    } catch {
+      setAssistantReply(offlineAssistantReply(question, activeRecipes));
     } finally {
-      setLoading(false);
+      setAssistantLoading(false);
     }
   }
 
@@ -233,11 +305,12 @@ export default function App() {
               <Text style={styles.cardTitle}>Voice inventory</Text>
               <TextInput style={styles.input} value={voiceText} onChangeText={setVoiceText} multiline />
               <TouchableOpacity style={styles.primaryButton} onPress={parseVoice}>
-                <Text style={styles.primaryText}>{loading ? "Extracting..." : "Extract ingredients"}</Text>
+                <Text style={styles.primaryText}>{inventoryLoading ? "Working..." : "Extract ingredients"}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.secondaryButton} onPress={simulatePhoto}>
                 <Text style={styles.secondaryText}>Simulate photo recognition</Text>
               </TouchableOpacity>
+              {inventoryMessage ? <Text style={styles.muted}>{inventoryMessage}</Text> : null}
             </View>
             {candidates.length > 0 && (
               <View style={styles.card}>
@@ -246,7 +319,7 @@ export default function App() {
                   <Text key={`${candidate.displayName}-${candidate.source}`} style={styles.body}>{candidate.displayName} · {candidate.quantity} · {Math.round(candidate.confidence * 100)}%</Text>
                 ))}
                 <TouchableOpacity style={styles.primaryButton} onPress={confirmCandidates}>
-                  <Text style={styles.primaryText}>Add confirmed ingredients</Text>
+                  <Text style={styles.primaryText}>{inventoryLoading ? "Adding..." : "Add confirmed ingredients"}</Text>
                 </TouchableOpacity>
               </View>
             )}
@@ -267,7 +340,7 @@ export default function App() {
             <Text style={styles.body}>{assistantReply}</Text>
             <TextInput style={styles.input} placeholder="What can I cook with chicken and rice?" value={assistantInput} onChangeText={setAssistantInput} />
             <TouchableOpacity style={styles.primaryButton} onPress={askAssistant}>
-              <Text style={styles.primaryText}>{loading ? "Thinking..." : "Ask assistant"}</Text>
+              <Text style={styles.primaryText}>{assistantLoading ? "Thinking..." : "Ask assistant"}</Text>
             </TouchableOpacity>
           </View>
         )}

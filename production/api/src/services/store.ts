@@ -158,15 +158,18 @@ export async function ensureDatabaseReady() {
   await query("ALTER TABLE user_inventory_items ADD COLUMN IF NOT EXISTS category TEXT DEFAULT 'Other'");
   await query("ALTER TABLE user_inventory_items ADD COLUMN IF NOT EXISTS confirmed BOOLEAN NOT NULL DEFAULT true");
   await query("ALTER TABLE user_inventory_items DROP CONSTRAINT IF EXISTS user_inventory_items_source_check");
-  await query("ALTER TABLE user_inventory_items ADD CONSTRAINT user_inventory_items_source_check CHECK (source IN ('starter_pack', 'manual', 'voice', 'photo', 'receipt', 'assistant'))");
+  await query("ALTER TABLE user_inventory_items DROP CONSTRAINT IF EXISTS smartchef_inventory_source_check");
+  await query("ALTER TABLE user_inventory_items ADD CONSTRAINT smartchef_inventory_source_check CHECK (source IN ('starter_pack', 'manual', 'voice', 'photo', 'receipt', 'assistant'))");
   await query("ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS store TEXT");
   await query("ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS store_customer_id TEXT");
   await query("ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS store_subscription_id TEXT");
   await query("ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ NOT NULL DEFAULT now()");
   await query("ALTER TABLE subscriptions DROP CONSTRAINT IF EXISTS subscriptions_status_check");
-  await query("ALTER TABLE subscriptions ADD CONSTRAINT subscriptions_status_check CHECK (status IN ('trialing', 'basic_active', 'pro_active', 'expired', 'cancelled'))");
+  await query("ALTER TABLE subscriptions DROP CONSTRAINT IF EXISTS smartchef_subscriptions_status_check");
+  await query("ALTER TABLE subscriptions ADD CONSTRAINT smartchef_subscriptions_status_check CHECK (status IN ('trialing', 'basic_active', 'pro_active', 'expired', 'cancelled'))");
   await query("ALTER TABLE subscriptions DROP CONSTRAINT IF EXISTS subscriptions_plan_check");
-  await query("ALTER TABLE subscriptions ADD CONSTRAINT subscriptions_plan_check CHECK (plan IN ('basic_monthly', 'pro_monthly', 'pro_yearly'))");
+  await query("ALTER TABLE subscriptions DROP CONSTRAINT IF EXISTS smartchef_subscriptions_plan_check");
+  await query("ALTER TABLE subscriptions ADD CONSTRAINT smartchef_subscriptions_plan_check CHECK (plan IN ('basic_monthly', 'pro_monthly', 'pro_yearly'))");
 
   const trialStartedAt = new Date();
   const trialEndsAt = new Date(Date.now() + 7 * 86400000);
@@ -262,6 +265,12 @@ export async function setProfile(userId: string, profile: UserProfile) {
 export async function upsertInventoryItems(userId: string, items: InventoryItem[]) {
   for (const item of items) {
     const { amount, unit } = splitQuantity(item.quantity);
+    const existing = await query<{ id: string }>(
+      "SELECT id FROM user_inventory_items WHERE user_id = $1 AND lower(display_name) = lower($2) AND consumed_at IS NULL LIMIT 1",
+      [userId, item.displayName]
+    );
+    const itemId = existing.rows[0]?.id ?? item.id;
+
     await query(
       `INSERT INTO user_inventory_items (id, user_id, display_name, quantity, unit, source, confidence, expires_at, category, confirmed)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
@@ -275,7 +284,7 @@ export async function upsertInventoryItems(userId: string, items: InventoryItem[
          category = EXCLUDED.category,
          confirmed = EXCLUDED.confirmed`,
       [
-        item.id,
+        itemId,
         userId,
         item.displayName,
         amount,

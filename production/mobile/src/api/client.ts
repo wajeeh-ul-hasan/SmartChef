@@ -2,19 +2,33 @@ import type { IngredientCandidate, InventoryItem, Plan, RecommendationSections, 
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
 const headers = { "Content-Type": "application/json", "x-user-id": "demo-user" };
+const requestTimeoutMs = 18000;
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    ...options,
-    headers: { ...headers, ...(options.headers ?? {}) }
-  });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), requestTimeoutMs);
 
-  if (!response.ok) {
-    const body = await response.text();
-    throw new Error(body || `Request failed: ${response.status}`);
+  try {
+    const response = await fetch(`${API_BASE_URL}${path}`, {
+      ...options,
+      signal: controller.signal,
+      headers: { ...headers, ...(options.headers ?? {}) }
+    });
+
+    if (!response.ok) {
+      const body = await response.text();
+      throw new Error(body || `Request failed: ${response.status}`);
+    }
+
+    return response.json() as Promise<T>;
+  } catch (error) {
+    if (error instanceof Error && error.name === "AbortError") {
+      throw new Error("SmartChef took too long to respond. Please try again.");
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeout);
   }
-
-  return response.json() as Promise<T>;
 }
 
 export const api = {
